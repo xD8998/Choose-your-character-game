@@ -1,84 +1,75 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
-  <title>Character Select & Game</title>
-  <link rel="stylesheet" href="styles.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game</title>
+    <link rel="stylesheet" href="./style.css">
 </head>
 <body>
-  <div id="game-container" class="game-container">
+    <!-- Background music -->
+    <audio id="background-music" src="./background-music.mp3" loop></audio>
+    <audio id="battle-music"></audio>
+    
     <!-- Character Select Screen -->
-    <div id="character-select-screen">
-      <div class="background-image"></div>
-      <div class="background-overlay"></div>
-      <div class="character-select">
-        <h1>Choose Your Character</h1>
-        <div class="mission-brief hidden">
-          <h2>Level 1: Patrick's Floppa Army</h2>
-          <div class="mission-content">
-            <div class="mission-image">
-              <img src="/Patrick_Star.svg.png" alt="Patrick with Floppa" style="width: 200px;">
-              <img src="/floppa_png-removebg-preview.png" alt="Floppa" style="width: 150px;">
-            </div>
-            <div class="mission-text">
-              <p class="story">Patrick Star has gone mad with power! After discovering a mysterious ability to command an army of Floppas, 
-              he's taken over the peaceful garden and threatens to expand his territory. His Floppa minions are causing chaos everywhere!</p>
-              <p class="objective">Your Mission: Defeat Patrick Star and his army of Floppa companions before his power grows too strong!</p>
-              <ul class="mission-details">
-                <li>Boss Health: 300 HP</li>
-                <li>Watch out for Floppa reinforcements!</li>
-                <li>Find weapon upgrades to increase your damage!</li>
-              </ul>
-            </div>
-          </div>
-          <button id="start-game">Start Game</button>
-        </div>
+    <div id="character-select-screen" class="character-select">
+        <h1>Select Your Character</h1>
         <div class="character-grid">
-          <div class="character-card" data-character="Steve">
-            <img src="/the REAL REAL STEVE.jpg" alt="Steve">
-            <p>Steve</p>
-          </div>
-          <div class="character-card" data-character="Among Us">
-            <img src="/an871k4o1sn51 (1).png" alt="Among Us">
-            <p>Among Us</p>
-          </div>
-          <div class="character-card" data-character="Roblox Noob">
-            <img src="/OIP (1).jfif" alt="Roblox Noob">
-            <p>Roblox Noob</p>
-          </div>
-          <div class="character-card" data-character="Mario">
-            <img src="/smb1 mario idle.webp" alt="Mario">
-            <p>Mario</p>
-          </div>
+            <div class="character-card" data-character="Steve">
+                <img src="./the REAL REAL STEVE.jpg" alt="Steve">
+                <p>Steve</p>
+            </div>
+            <div class="character-card" data-character="Mario">
+                <img src="./smb1 mario idle.webp" alt="Mario">
+                <p>Mario</p>
+            </div>
+            <div class="character-card" data-character="Among Us">
+                <img src="./an871k4o1sn51 (1).png" alt="Among Us">
+                <p>Among Us</p>
+            </div>
+            <div class="character-card" data-character="Roblox Noob">
+                <img src="./OIP (1).jfif" alt="Roblox Noob">
+                <p>Roblox Noob</p>
+            </div>
         </div>
-      </div>
+        <div class="mission-brief hidden">
+            <h2>Mission Brief</h2>
+            <div class="mission-content">
+                <div class="mission-image">
+                    <img src="./Windows.webp" alt="Background Image">
+                </div>
+                <div class="mission-text">
+                    <p class="story">Prepare for an epic battle in the ultimate showdown!</p>
+                    <p class="objective">Objective: Defeat Patrick and survive the Floppas.</p>
+                    <ul class="mission-details">
+                        <li>Use your character's unique abilities.</li>
+                        <li>Collect weapons to increase your firepower.</li>
+                        <li>Avoid Patrick's smug attacks.</li>
+                    </ul>
+                </div>
+            </div>
+            <button id="start-game">Start Game</button>
+        </div>
     </div>
-
-    <!-- Game Screen (Initially Hidden) -->
+    
+    <!-- Game Screen -->
     <div id="game-screen" class="game-screen hidden">
-      <canvas id="gameCanvas"></canvas>
-      <div id="game-ui">
-        <div id="health-bar">
-          <div id="health-fill"></div>
+        <canvas id="gameCanvas"></canvas>
+        <div id="game-ui">
+            <div id="health-bar">
+                <div id="health-fill"></div>
+                <div id="health-text">100%</div>
+            </div>
         </div>
-      </div>
     </div>
 
     <!-- Game Over Screen -->
-    <div id="game-over-screen" class="hidden">
-      <div class="game-over-menu">
-        <h2 id="game-over-title"></h2>
+    <div id="game-over-screen" class="game-over-menu hidden">
+        <h1 id="game-over-title"></h1>
         <button id="return-to-select">Return to Character Select</button>
-      </div>
     </div>
-  </div>
-  
-  <audio id="background-music" loop>
-    <source src="/Elevator Music.mp3" type="audio/mp3">
-  </audio>
-  
-  <audio id="battle-music" loop>
-    <source src="/05. Loonboon.mp3" type="audio/mp3">
-  </audio>
-  
-  <script type="module" src="game.js"></script>
+
+    <!-- Scripts -->
+    <script src="./game.js"></script>
 </body>
 </html>
