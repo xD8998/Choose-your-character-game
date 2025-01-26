@@ -1,261 +1,92 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Game</title>
-    <style>
-        /* Global Styles */
-        body, html {
-            margin: 0;
-            padding: 0;
-            height: 100%;
-            font-family: Arial, sans-serif;
-        }
-
-        .game-container {
-            position: relative;
-            height: 100vh;
-            width: 100vw;
-            overflow: hidden;
-        }
-
-        .background-image {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-image: url('./Windows.webp');
-            background-size: cover;
-            background-position: center;
-            z-index: -2;
-        }
-
-        .background-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(255, 255, 255, 0.7);
-            z-index: -1;
-        }
-
-        /* Character Select */
-        .character-select {
-            text-align: center;
-            padding: 20px;
-            position: relative;
-            z-index: 10;
-        }
-
-        .character-select h1 {
-            color: #333;
-            text-shadow: 2px 2px 4px rgba(255,255,255,0.5);
-        }
-
-        .character-grid {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            flex-wrap: wrap;
-        }
-
-        .character-card {
-            cursor: pointer;
-            border: 3px solid transparent;
-            transition: all 0.3s ease;
-            padding: 10px;
-            border-radius: 10px;
-            background-color: rgba(255,255,255,0.8);
-            width: 150px;
-        }
-
-        .character-card:hover {
-            border-color: #FFD700;
-            transform: scale(1.05);
-        }
-
-        .character-card.selected {
-            border-color: #FF4500;
-            background-color: rgba(255, 69, 0, 0.2);
-        }
-
-        .character-card img {
-            max-width: 100%;
-            max-height: 150px;
-            object-fit: contain;
-        }
-
-        .hidden {
-            display: none;
-        }
-
-        #start-game {
-            margin-top: 20px;
-            padding: 10px 20px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-
-        #start-game:hover {
-            background-color: #45a049;
-        }
-
-        .game-screen {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-image: url('./PVZ Lawn.jpg');
-            background-size: cover;
-            background-position: center;
-        }
-
-        #gameCanvas {
-            width: 100%;
-            height: 100%;
-        }
-
-        #game-ui {
-            position: absolute;
-            top: 10px;
-            left: 10px;
-            z-index: 100;
-        }
-
-        #health-bar {
-            width: 250px;
-            height: 25px;
-            background-color: #ff0000;
-            border: 2px solid #000;
-            border-radius: 10px;
-            overflow: hidden;
-            margin-top: 10px;
-            position: relative;
-        }
-
-        #health-fill {
-            width: 100%;
-            height: 100%;
-            background-color: #00ff00;
-            transition: width 0.3s ease;
-        }
-
-        #health-text {
-            position: absolute;
-            width: 100%;
-            text-align: center;
-            color: white;
-            text-shadow: 1px 1px 2px black;
-            top: -25px;
-            font-weight: bold;
-        }
-
-        /* Game Over Screen */
-        .game-over-menu {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background-color: rgba(255, 255, 255, 0.9);
-            padding: 30px;
-            border-radius: 15px;
-            text-align: center;
-            z-index: 1000;
-            box-shadow: 0 0 20px rgba(0,0,0,0.3);
-        }
-
-        #game-over-title {
-            font-size: 2em;
-            margin-bottom: 20px;
-            color: #333;
-        }
-
-        #return-to-select {
-            padding: 15px 30px;
-            font-size: 1.2em;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
-
-        #return-to-select:hover {
-            background-color: #45a049;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Garden vs Deads 2 (PVZ Ripoff)</title>
+  <!-- Link to your CSS -->
+  <link rel="stylesheet" href="./style.css" />
 </head>
 <body>
-    <!-- Background Music -->
-    <audio id="background-music" src="./background-music.mp3" loop></audio>
-    <audio id="battle-music"></audio>
+  <!-- Background Music (loops by default if you want) -->
+  <audio id="background-music" src="./background-music.mp3" loop></audio>
+  <!-- Battle Music is set dynamically in gameEngine.js -->
+  <audio id="battle-music"></audio>
 
-    <!-- Character Select Screen -->
-    <div id="character-select-screen" class="character-select">
-        <h1>Select Your Character</h1>
-        <div class="character-grid">
-            <div class="character-card" data-character="Steve">
-                <img src="./the REAL REAL STEVE.jpg" alt="Steve">
-                <p>Steve</p>
-            </div>
-            <div class="character-card" data-character="Mario">
-                <img src="./smb1 mario idle.webp" alt="Mario">
-                <p>Mario</p>
-            </div>
-            <div class="character-card" data-character="Among Us">
-                <img src="./an871k4o1sn51 (1).png" alt="Among Us">
-                <p>Among Us</p>
-            </div>
-            <div class="character-card" data-character="Roblox Noob">
-                <img src="./OIP (1).jfif" alt="Roblox Noob">
-                <p>Roblox Noob</p>
-            </div>
-        </div>
-        <div class="mission-brief hidden">
-            <h2>Mission Brief</h2>
-            <div class="mission-content">
-                <div class="mission-image">
-                    <img src="./Windows.webp" alt="Background Image">
-                </div>
-                <div class="mission-text">
-                    <p class="story">Prepare for an epic battle in the ultimate showdown!</p>
-                    <p class="objective">Objective: Defeat Patrick and survive the Floppas.</p>
-                    <ul class="mission-details">
-                        <li>Use your character's unique abilities.</li>
-                        <li>Collect weapons to increase your firepower.</li>
-                        <li>Avoid Patrick's smug attacks.</li>
-                    </ul>
-                </div>
-            </div>
-            <button id="start-game">Start Game</button>
-        </div>
+  <!-- Character Select Screen -->
+  <div id="character-select-screen" class="character-select">
+    <h1>Select Your Character</h1>
+    <div class="character-grid">
+      <!-- Steve -->
+      <div class="character-card" data-character="Steve">
+        <img src="./the REAL REAL STEVE.jpg" alt="Steve" />
+        <p>Steve</p>
+      </div>
+      <!-- Mario -->
+      <div class="character-card" data-character="Mario">
+        <img src="./smb1 mario idle.webp" alt="Mario" />
+        <p>Mario</p>
+      </div>
+      <!-- Among Us -->
+      <div class="character-card" data-character="Among Us">
+        <img src="./an871k4o1sn51 (1).png" alt="Among Us" />
+        <p>Among Us</p>
+      </div>
+      <!-- Roblox Noob -->
+      <div class="character-card" data-character="Roblox Noob">
+        <img src="./OIP (1).jfif" alt="Roblox Noob" />
+        <p>Roblox Noob</p>
+      </div>
     </div>
 
-    <!-- Game Screen -->
-    <div id="game-screen" class="game-screen hidden">
-        <canvas id="gameCanvas"></canvas>
-        <div id="game-ui">
-            <div id="health-bar">
-                <div id="health-fill"></div>
-                <div id="health-text">100%</div>
-            </div>
+    <!-- Mission Brief (Initially hidden with CSS) -->
+    <div class="mission-brief hidden">
+      <h2>Mission Brief</h2>
+      <div class="mission-content">
+        <div class="mission-image">
+          <img src="./Windows.webp" alt="Windows Background" />
+          <!-- Optional second image in same container:
+          <img src="./some-other-image.png" alt="Some second image" />
+          -->
         </div>
+        <div class="mission-text">
+          <p class="story">
+            Prepare for an epic battle in the ultimate showdown!
+          </p>
+          <p class="objective">
+            Objective: Defeat Patrick and survive the Floppas.
+          </p>
+          <ul class="mission-details">
+            <li>Use your character's unique abilities.</li>
+            <li>Collect weapons to increase your firepower.</li>
+            <li>Avoid Patrick's smug attacks.</li>
+          </ul>
+        </div>
+      </div>
+      <button id="start-game">Start Game</button>
     </div>
+  </div>
 
-    <!-- Game Over Screen -->
-    <div id="game-over-screen" class="game-over-menu hidden">
-        <h1 id="game-over-title"></h1>
-        <button id="return-to-select">Return to Character Select</button>
+  <!-- Game Screen (Initially hidden) -->
+  <div id="game-screen" class="game-screen hidden">
+    <canvas id="gameCanvas"></canvas>
+    <div id="game-ui">
+      <div id="health-bar">
+        <div id="health-fill"></div>
+        <div id="health-text">100%</div>
+      </div>
     </div>
+  </div>
 
-    <script src="./game.js"></script>
+  <!-- Game Over Screen (Initially hidden) -->
+  <div id="game-over-screen" class="game-over-menu hidden">
+    <h1 id="game-over-title"></h1>
+    <button id="return-to-select">Return to Character Select</button>
+  </div>
+
+  <!-- JavaScript Files -->
+  <!-- Ensure gameEngine.js is in the same folder. -->
+  <!-- We import 'GameEngine' in game.js, so we only need to include game.js here as a module. -->
+  <script type="module" src="./game.js"></script>
 </body>
 </html>
