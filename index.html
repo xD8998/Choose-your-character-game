@@ -2,91 +2,927 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Garden vs Deads 2 (PVZ Ripoff)</title>
-  <!-- Link to your CSS -->
-  <link rel="stylesheet" href="./style.css" />
+  <title>Character Select & Game</title>
+  <style>
+    /*******************************
+     *         INLINE CSS
+     *******************************/
+    body, html {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+        font-family: Arial, sans-serif;
+    }
+
+    .game-container {
+        position: relative;
+        height: 100vh;
+        width: 100vw;
+        overflow: hidden;
+    }
+
+    .background-image {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        /* Image in same folder: "Windows.webp" */
+        background-image: url('Windows.webp');
+        background-size: cover;
+        background-position: center;
+        z-index: -2;
+    }
+
+    .background-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(255, 255, 255, 0.7);
+        z-index: -1;
+    }
+
+    .character-select {
+        text-align: center;
+        padding: 20px;
+        position: relative;
+        z-index: 10;
+    }
+
+    .character-select h1 {
+        color: #333;
+        text-shadow: 2px 2px 4px rgba(255,255,255,0.5);
+    }
+
+    .character-grid {
+        display: flex;
+        justify-content: center;
+        gap: 20px;
+        flex-wrap: wrap;
+    }
+
+    .character-card {
+        cursor: pointer;
+        border: 3px solid transparent;
+        transition: all 0.3s ease;
+        padding: 10px;
+        border-radius: 10px;
+        background-color: rgba(255,255,255,0.8);
+        width: 150px; /* Fixed width to keep cards consistent */
+    }
+
+    .character-card:hover {
+        border-color: #FFD700;
+        transform: scale(1.05);
+    }
+
+    .character-card.selected {
+        border-color: #FF4500;
+        background-color: rgba(255, 69, 0, 0.2);
+    }
+
+    .character-card img {
+        max-width: 100%;
+        max-height: 150px;
+        object-fit: contain;
+    }
+
+    .hidden {
+        display: none;
+    }
+
+    #selected-character {
+        display: none;
+    }
+
+    #start-game {
+        margin-top: 20px;
+        padding: 10px 20px;
+        background-color: #4CAF50;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+    #start-game:hover {
+        background-color: #45a049;
+    }
+
+    .game-screen {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        /* Image in same folder: "PVZ Lawn.jpg" */
+        background-image: url('PVZ Lawn.jpg');
+        background-size: cover;
+        background-position: center;
+    }
+
+    #gameCanvas {
+        width: 100%;
+        height: 100%;
+    }
+
+    #game-ui {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        z-index: 100;
+    }
+
+    #health-bar {
+        width: 250px;
+        height: 25px;
+        background-color: #ff0000;
+        border: 2px solid #000;
+        border-radius: 10px;
+        overflow: hidden;
+        margin-top: 10px;
+        position: relative;
+    }
+
+    #health-fill {
+        width: 100%;
+        height: 100%;
+        background-color: #00ff00;
+        transition: width 0.3s ease;
+    }
+
+    #health-text {
+        position: absolute;
+        width: 100%;
+        text-align: center;
+        color: white;
+        text-shadow: 1px 1px 2px black;
+        top: -25px;
+        font-weight: bold;
+    }
+
+    #game-screen {
+        position: relative;
+    }
+
+    .game-over-menu {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background-color: rgba(255, 255, 255, 0.9);
+        padding: 30px;
+        border-radius: 15px;
+        text-align: center;
+        z-index: 1000;
+        box-shadow: 0 0 20px rgba(0,0,0,0.3);
+    }
+
+    #game-over-title {
+        font-size: 2em;
+        margin-bottom: 20px;
+        color: #333;
+    }
+
+    #return-to-select {
+        padding: 15px 30px;
+        font-size: 1.2em;
+        background-color: #4CAF50;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+    #return-to-select:hover {
+        background-color: #45a049;
+    }
+
+    /* Weapon styles */
+    .weapon {
+        position: absolute;
+        width: 40px;
+        height: 40px;
+        pointer-events: none;
+    }
+
+    /* Mission Brief Styles */
+    .mission-brief {
+      background-color: rgba(255, 255, 255, 0.9);
+      border-radius: 15px;
+      padding: 20px;
+      margin: 20px auto;
+      max-width: 800px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.2);
+      text-align: left;
+    }
+
+    .mission-brief h2 {
+      color: #ff4500;
+      text-align: center;
+      font-size: 24px;
+      margin-bottom: 20px;
+    }
+
+    .mission-content {
+      display: flex;
+      gap: 20px;
+      align-items: flex-start;
+    }
+
+    .mission-image {
+      flex: 0 0 auto;
+      position: relative;
+    }
+
+    .mission-image img:nth-child(2) {
+      position: absolute;
+      bottom: -20px;
+      right: -20px;
+      transform: scale(0.7);
+    }
+
+    .mission-text {
+      flex: 1;
+    }
+
+    .story {
+      font-size: 16px;
+      line-height: 1.5;
+      color: #333;
+      margin-bottom: 15px;
+    }
+
+    .objective {
+      font-size: 18px;
+      color: #ff4500;
+      font-weight: bold;
+      margin-bottom: 15px;
+    }
+
+    .mission-details {
+      background-color: rgba(0, 0, 0, 0.05);
+      padding: 15px 30px;
+      border-radius: 10px;
+      list-style-type: none;
+    }
+
+    .mission-details li {
+      color: #666;
+      margin: 8px 0;
+      position: relative;
+    }
+
+    .mission-details li::before {
+      content: "•";
+      color: #ff4500;
+      font-weight: bold;
+      margin-right: 10px;
+    }
+
+    .mission-brief #start-game {
+      display: block;
+      margin: 20px auto 0;
+      padding: 15px 30px;
+      font-size: 1.2em;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    .mission-brief #start-game:hover {
+      background-color: #45a049;
+    }
+  </style>
 </head>
 <body>
-  <!-- Background Music (loops by default if you want) -->
-  <audio id="background-music" src="./background-music.mp3" loop></audio>
-  <!-- Battle Music is set dynamically in gameEngine.js -->
-  <audio id="battle-music"></audio>
 
-  <!-- Character Select Screen -->
-  <div id="character-select-screen" class="character-select">
-    <h1>Select Your Character</h1>
-    <div class="character-grid">
-      <!-- Steve -->
-      <div class="character-card" data-character="Steve">
-        <img src="./the REAL REAL STEVE.jpg" alt="Steve" />
-        <p>Steve</p>
-      </div>
-      <!-- Mario -->
-      <div class="character-card" data-character="Mario">
-        <img src="./smb1 mario idle.webp" alt="Mario" />
-        <p>Mario</p>
-      </div>
-      <!-- Among Us -->
-      <div class="character-card" data-character="Among Us">
-        <img src="./an871k4o1sn51 (1).png" alt="Among Us" />
-        <p>Among Us</p>
-      </div>
-      <!-- Roblox Noob -->
-      <div class="character-card" data-character="Roblox Noob">
-        <img src="./OIP (1).jfif" alt="Roblox Noob" />
-        <p>Roblox Noob</p>
-      </div>
-    </div>
+  <!-- =========== CHARACTER SELECT SCREEN =========== -->
+  <div class="game-container" id="character-select-screen">
+    <div class="background-image"></div>
+    <div class="background-overlay"></div>
 
-    <!-- Mission Brief (Initially hidden with CSS) -->
-    <div class="mission-brief hidden">
-      <h2>Mission Brief</h2>
-      <div class="mission-content">
-        <div class="mission-image">
-          <img src="./Windows.webp" alt="Windows Background" />
-          <!-- Optional second image in same container:
-          <img src="./some-other-image.png" alt="Some second image" />
-          -->
+    <div class="character-select">
+      <h1>Select Your Character</h1>
+      <div class="character-grid">
+        <!-- Each .character-card must have a data-character matching the logic in JS -->
+        <div class="character-card" data-character="Steve">
+          <img src="the REAL REAL STEVE.jpg" alt="Steve" />
+          <p>Steve</p>
         </div>
-        <div class="mission-text">
-          <p class="story">
-            Prepare for an epic battle in the ultimate showdown!
-          </p>
-          <p class="objective">
-            Objective: Defeat Patrick and survive the Floppas.
-          </p>
-          <ul class="mission-details">
-            <li>Use your character's unique abilities.</li>
-            <li>Collect weapons to increase your firepower.</li>
-            <li>Avoid Patrick's smug attacks.</li>
-          </ul>
+
+        <div class="character-card" data-character="Mario">
+          <img src="smb1 mario idle.webp" alt="Mario" />
+          <p>Mario</p>
+        </div>
+
+        <div class="character-card" data-character="Among Us">
+          <img src="an871k4o1sn51 (1).png" alt="Among Us" />
+          <p>Among Us</p>
+        </div>
+
+        <div class="character-card" data-character="Roblox Noob">
+          <img src="OIP (1).jfif" alt="Roblox Noob" />
+          <p>Roblox Noob</p>
         </div>
       </div>
-      <button id="start-game">Start Game</button>
+
+      <!-- Mission Brief (initially hidden) -->
+      <div class="mission-brief hidden">
+        <h2>Mission Brief</h2>
+        <div class="mission-content">
+          <div class="mission-image">
+            <img src="Patrick_Star.svg.png" alt="Patrick">
+            <img src="floppa_png-removebg-preview.png" alt="Floppa">
+          </div>
+          <div class="mission-text">
+            <p class="story">
+              Patrick and his army of Floppas have invaded your lawn.
+              Only you can stop them! Choose your fighter, outsmart Patrick,
+              and reclaim your turf!
+            </p>
+            <p class="objective">Objective: Defeat Patrick and his Floppa minions!</p>
+            <ul class="mission-details">
+              <li>Use W, A, S, D to move</li>
+              <li>Press F to attack</li>
+              <li>Pick up guns for enhanced firepower (time-limited)</li>
+            </ul>
+          </div>
+        </div>
+        <button id="start-game">Start Game</button>
+      </div>
     </div>
   </div>
 
-  <!-- Game Screen (Initially hidden) -->
+  <!-- =========== ACTUAL GAME SCREEN (hidden by default) =========== -->
   <div id="game-screen" class="game-screen hidden">
     <canvas id="gameCanvas"></canvas>
+
     <div id="game-ui">
       <div id="health-bar">
         <div id="health-fill"></div>
-        <div id="health-text">100%</div>
+        <div id="health-text">Health</div>
       </div>
+    </div>
+
+    <!-- =========== GAME OVER MENU =========== -->
+    <div id="game-over-screen" class="game-over-menu hidden">
+      <h1 id="game-over-title"></h1>
+      <button id="return-to-select">Return to Character Select</button>
     </div>
   </div>
 
-  <!-- Game Over Screen (Initially hidden) -->
-  <div id="game-over-screen" class="game-over-menu hidden">
-    <h1 id="game-over-title"></h1>
-    <button id="return-to-select">Return to Character Select</button>
-  </div>
+  <!-- =========== AUDIO ELEMENTS =========== -->
+  <audio id="background-music" src="Minecraft Chill...(Nostalgia Music Relax, Sleep.).mp3" loop></audio>
+  <audio id="battle-music" src="05. Loonboon.mp3" loop></audio>
 
-  <!-- JavaScript Files -->
-  <!-- Ensure gameEngine.js is in the same folder. -->
-  <!-- We import 'GameEngine' in game.js, so we only need to include game.js here as a module. -->
-  <script type="module" src="./game.js"></script>
+  <!-- ================== INLINE gameEngine.js ================== -->
+  <script type="module">
+  /* ----------------- gameEngine.js content ----------------- */
+  export class GameEngine {
+    constructor(selectedCharacter) {
+      this.canvas = document.getElementById('gameCanvas');
+      this.ctx = this.canvas.getContext('2d');
+      this.selectedCharacter = selectedCharacter;
+      this.gameActive = true;
+
+      // Set canvas size
+      this.resizeCanvas();
+      window.addEventListener('resize', () => this.resizeCanvas());
+
+      // Player object
+      this.player = {
+        x: 100,
+        y: 100,
+        speed: 5,
+        width: 70,
+        height: 70,
+        health: 100,
+        hasGun: false,
+        sprite: new Image(),
+        lastAttack: 0,
+        attackCooldown: 1000
+      };
+
+      // Patrick object
+      this.patrick = {
+        x: 500,
+        y: 300,
+        width: 80,
+        height: 80,
+        health: 300,
+        speed: 2,
+        direction: 1,
+        moveTimer: 0,
+        sprite: new Image(),
+        smugSprite: new Image(),
+        danceSprite: null,
+        isDancing: false,
+        isSmug: false
+      };
+
+      // Arrays for enemies, projectiles, pickups
+      this.floppas = [];
+      this.projectiles = [];
+      this.gunPickups = [];
+
+      // Audio references
+      this.battleMusic = document.getElementById('battle-music');
+      this.backgroundMusic = document.getElementById('background-music');
+
+      // Character-based battle music
+      if (selectedCharacter === 'Steve') {
+        this.battleMusic.src = 'Minecraft Chill...(Nostalgia Music Relax, Sleep.).mp3';
+      } else {
+        this.battleMusic.src = '05. Loonboon.mp3';
+      }
+
+      // Load sprites
+      this.player.sprite.src = this.getCharacterSprite(selectedCharacter);
+      this.patrick.sprite.src = 'Patrick_Star.svg.png';
+      this.patrick.smugSprite.src = 'OIP (2).jpg';
+
+      // Weapon sprites mapping
+      this.weaponSprites = {
+        'Roblox Noob': 'Untitled.jpg',
+        'Mario': 'pipe.png',
+        'Among Us': 'Apple.png',
+        'Steve': 'Cake.png'
+      };
+
+      // Patrick's dance element
+      this.patrickDanceElement = document.createElement('div');
+      this.patrickDanceElement.style.cssText = `
+        position: absolute;
+        display: none;
+        z-index: 1000;
+      `;
+      this.patrickDanceElement.innerHTML = `
+        <img src="patrick-dancing.gif" style="width: 250px; height: 250px;">
+      `;
+      document.getElementById('game-screen').appendChild(this.patrickDanceElement);
+
+      // Victory dance element
+      this.characterDanceElement = document.createElement('div');
+      this.characterDanceElement.style.cssText = `
+        position: absolute;
+        display: none;
+        z-index: 1000;
+      `;
+      document.getElementById('game-screen').appendChild(this.characterDanceElement);
+
+      // Victory dance GIFs
+      this.danceGifs = {
+        'Steve': 'minecraft-steve.gif',
+        'Mario': 'mario-mario-dancing.gif',
+        'Among Us': '200w.gif',
+        'Roblox Noob': '27187609c933f7c1009722b5fae6a4b4.gif'
+      };
+
+      // Gun sprite and sounds
+      this.gunSprite = new Image();
+      this.gunSprite.src = 'Item_Glock-sharedassets4.assets-616.webp';
+      this.gunSound = new Audio('gunshoot.mp3');
+      this.pipeSound = new Audio('metal pipe.wav');
+      this.gunSound.volume = 0.3;
+      this.pipeSound.volume = 0.3;
+
+      // Gun duration
+      this.gunTimeLeft = 0;
+
+      // Key inputs
+      this.keys = { w: false, s: false, a: false, d: false, f: false };
+
+      window.addEventListener('keydown', (e) => {
+        const key = e.key.toLowerCase();
+        if (key in this.keys) {
+          this.keys[key] = true;
+          if (key === 'f') {
+            this.handleAttack();
+          }
+        }
+      });
+
+      window.addEventListener('keyup', (e) => {
+        const key = e.key.toLowerCase();
+        if (key in this.keys) {
+          this.keys[key] = false;
+        }
+      });
+
+      window.addEventListener('mousemove', (e) => {
+        this.lastMouseX = e.clientX;
+        this.lastMouseY = e.clientY;
+      });
+
+      window.addEventListener('click', (e) => {
+        const rect = this.canvas.getBoundingClientRect();
+        this.lastMouseX = e.clientX - rect.left;
+        this.lastMouseY = e.clientY - rect.top;
+      });
+    }
+
+    getCharacterSprite(character) {
+      const sprites = {
+        'Steve': 'the REAL REAL STEVE.jpg',
+        'Among Us': 'an871k4o1sn51 (1).png',
+        'Roblox Noob': 'OIP (1).jfif',
+        'Mario': 'smb1 mario idle.webp'
+      };
+      return sprites[character];
+    }
+
+    resizeCanvas() {
+      this.canvas.width = window.innerWidth;
+      this.canvas.height = window.innerHeight;
+    }
+
+    start() {
+      // Stop background music, start battle
+      this.backgroundMusic.pause();
+      this.battleMusic.volume = 0.3;
+      this.battleMusic.play();
+
+      this.gameLoop();
+      this.spawnGunPickup();
+      setInterval(() => this.summonFloppas(), 3000);
+    }
+
+    spawnGunPickup() {
+      // 10% chance, limit to 1 on-screen
+      if (Math.random() < 0.1 && this.gunPickups.length < 1) {
+        this.gunPickups.push({
+          x: Math.random() * (this.canvas.width - 40),
+          y: Math.random() * (this.canvas.height - 40),
+          width: 40,
+          height: 40
+        });
+      }
+      setTimeout(() => this.spawnGunPickup(), 5000);
+    }
+
+    summonFloppas() {
+      if (this.floppas.length < 3) {
+        this.patrick.isSmug = true;
+        setTimeout(() => (this.patrick.isSmug = false), 1000);
+
+        const newFloppa = {
+          x: this.patrick.x,
+          y: this.patrick.y,
+          width: 60,
+          height: 60,
+          speed: 3,
+          health: 50,
+          sprite: new Image()
+        };
+        newFloppa.sprite.src = 'floppa_png-removebg-preview.png';
+        this.floppas.push(newFloppa);
+      }
+    }
+
+    handleAttack() {
+      const now = Date.now();
+      if (now - this.player.lastAttack >= this.player.attackCooldown) {
+        const projectile = {
+          x: this.player.x + this.player.width / 2,
+          y: this.player.y + this.player.height / 2,
+          width: 40,
+          height: 40,
+          speed: this.player.hasGun ? 12 : 8,
+          damage: this.player.hasGun
+            ? Math.floor(Math.random() * 21) + 40
+            : Math.floor(Math.random() * 21) + 10,
+          sprite: new Image()
+        };
+
+        if (this.player.hasGun) {
+          // Mario uses pipeSound, others use gunSound
+          if (this.selectedCharacter === 'Mario') {
+            this.pipeSound.currentTime = 0;
+            this.pipeSound.play();
+          } else {
+            this.gunSound.currentTime = 0;
+            this.gunSound.play();
+          }
+        }
+
+        projectile.sprite.src = this.weaponSprites[this.selectedCharacter];
+        const angle = Math.atan2(this.lastMouseY - projectile.y, this.lastMouseX - projectile.x);
+        projectile.dx = Math.cos(angle) * projectile.speed;
+        projectile.dy = Math.sin(angle) * projectile.speed;
+
+        this.projectiles.push(projectile);
+        this.player.lastAttack = now;
+      }
+    }
+
+    update() {
+      // Player movement
+      if (this.keys['w']) this.player.y -= this.player.speed;
+      if (this.keys['s']) this.player.y += this.player.speed;
+      if (this.keys['a']) this.player.x -= this.player.speed;
+      if (this.keys['d']) this.player.x += this.player.speed;
+
+      // Clamp to canvas
+      this.player.x = Math.max(0, Math.min(this.canvas.width - this.player.width, this.player.x));
+      this.player.y = Math.max(0, Math.min(this.canvas.height - this.player.height, this.player.y));
+
+      // Collision with Patrick
+      if (this.checkCollision(this.player, this.patrick)) {
+        this.player.health = Math.max(0, this.player.health - 2);
+        document.getElementById('health-fill').style.width = `${this.player.health}%`;
+      }
+
+      // Floppas chase player
+      this.floppas.forEach((floppa) => {
+        const dx = this.player.x - floppa.x;
+        const dy = this.player.y - floppa.y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        floppa.x += (dx / dist) * floppa.speed;
+        floppa.y += (dy / dist) * floppa.speed;
+
+        if (this.checkCollision(this.player, floppa)) {
+          this.player.health = Math.max(0, this.player.health - 0.5);
+          document.getElementById('health-fill').style.width = `${this.player.health}%`;
+        }
+      });
+
+      // Projectiles
+      this.projectiles.forEach((projectile, index) => {
+        projectile.x += projectile.dx;
+        projectile.y += projectile.dy;
+
+        // Hit Patrick
+        if (this.checkCollision(projectile, this.patrick)) {
+          this.patrick.health = Math.max(0, this.patrick.health - projectile.damage);
+          this.projectiles.splice(index, 1);
+        }
+
+        // Hit Floppas
+        this.floppas.forEach((floppa, floppaIndex) => {
+          if (this.checkCollision(projectile, floppa)) {
+            floppa.health -= projectile.damage;
+            this.projectiles.splice(index, 1);
+            if (floppa.health <= 0) {
+              this.floppas.splice(floppaIndex, 1);
+            }
+          }
+        });
+      });
+
+      // Remove off-screen projectiles
+      this.projectiles = this.projectiles.filter((p) =>
+        p.x >= 0 && p.x <= this.canvas.width && p.y >= 0 && p.y <= this.canvas.height
+      );
+
+      // Gun timer
+      if (this.player.hasGun) {
+        if (this.gunTimeLeft <= 0) {
+          this.player.hasGun = false;
+        } else {
+          this.gunTimeLeft--;
+        }
+      }
+
+      // Gun pickups
+      this.gunPickups.forEach((pickup, i) => {
+        if (this.checkCollision(this.player, pickup)) {
+          this.player.hasGun = true;
+          this.gunTimeLeft = 30 * 60; // 30 seconds at ~60fps
+          this.gunPickups.splice(i, 1);
+        }
+      });
+
+      // Patrick random movement
+      this.patrick.moveTimer++;
+      if (this.patrick.moveTimer >= 120) {
+        this.patrick.direction = Math.random() * Math.PI * 2;
+        this.patrick.moveTimer = 0;
+      }
+      this.patrick.x += Math.cos(this.patrick.direction) * this.patrick.speed;
+      this.patrick.y += Math.sin(this.patrick.direction) * this.patrick.speed;
+
+      // Clamp Patrick
+      this.patrick.x = Math.max(0, Math.min(this.canvas.width - this.patrick.width, this.patrick.x));
+      this.patrick.y = Math.max(0, Math.min(this.canvas.height - this.patrick.height, this.patrick.y));
+
+      // Check game over
+      if (this.player.health <= 0) {
+        this.gameOver(false);
+      } else if (this.patrick.health <= 0) {
+        this.gameOver(true);
+      }
+    }
+
+    checkCollision(r1, r2) {
+      return (
+        r1.x < r2.x + r2.width &&
+        r1.x + r1.width > r2.x &&
+        r1.y < r2.y + r2.height &&
+        r1.y + r1.height > r2.y
+      );
+    }
+
+    draw() {
+      this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+
+      // Draw custom background
+      const background = new Image();
+      background.src = 'Garden vs Deads 2 (pvz ripoff).jpg';
+      this.ctx.drawImage(background, 0, 0, this.canvas.width, this.canvas.height);
+
+      // Player
+      if (this.gameActive) {
+        this.ctx.drawImage(
+          this.player.sprite,
+          this.player.x,
+          this.player.y,
+          this.player.width,
+          this.player.height
+        );
+
+        // Gun overlay if equipped
+        if (this.player.hasGun) {
+          this.ctx.drawImage(
+            this.gunSprite,
+            this.player.x + this.player.width - 20,
+            this.player.y + this.player.height - 20,
+            30,
+            20
+          );
+        }
+      }
+
+      // Patrick or smug version (not dancing)
+      if (!this.patrick.isDancing) {
+        const patrickSprite = this.patrick.isSmug ? this.patrick.smugSprite : this.patrick.sprite;
+        this.ctx.drawImage(
+          patrickSprite,
+          this.patrick.x,
+          this.patrick.y,
+          this.patrick.width,
+          this.patrick.height
+        );
+      }
+
+      // Dancing?
+      if (this.patrick.isDancing) {
+        this.patrickDanceElement.style.display = 'block';
+        this.patrickDanceElement.style.left = `${this.patrick.x}px`;
+        this.patrickDanceElement.style.top = `${this.patrick.y}px`;
+      } else {
+        this.patrickDanceElement.style.display = 'none';
+      }
+
+      // Floppas
+      this.floppas.forEach((floppa) => {
+        this.ctx.drawImage(floppa.sprite, floppa.x, floppa.y, floppa.width, floppa.height);
+      });
+
+      // Projectiles
+      this.projectiles.forEach((proj) => {
+        this.ctx.drawImage(proj.sprite, proj.x, proj.y, proj.width, proj.height);
+      });
+
+      // Gun pickups
+      this.gunPickups.forEach((pickup) => {
+        this.ctx.drawImage(this.gunSprite, pickup.x, pickup.y, 40, 40);
+      });
+
+      // Health text
+      this.ctx.fillStyle = 'white';
+      this.ctx.strokeStyle = 'black';
+      this.ctx.lineWidth = 3;
+      this.ctx.font = '20px Arial';
+
+      const playerHP = `HP: ${Math.ceil(this.player.health)}/100`;
+      this.ctx.strokeText(playerHP, 10, 60);
+      this.ctx.fillText(playerHP, 10, 60);
+
+      const patrickHP = `HP: ${Math.ceil(this.patrick.health)}/300`;
+      this.ctx.strokeText(patrickHP, this.patrick.x, this.patrick.y - 10);
+      this.ctx.fillText(patrickHP, this.patrick.x, this.patrick.y - 10);
+
+      // Gun timer
+      if (this.player.hasGun) {
+        const timeLeft = Math.ceil(this.gunTimeLeft / 60);
+        const gunTimer = `Gun: ${timeLeft}s`;
+        this.ctx.strokeText(gunTimer, 10, 90);
+        this.ctx.fillText(gunTimer, 10, 90);
+      }
+    }
+
+    gameOver(playerWon) {
+      this.gameActive = false;
+
+      if (playerWon) {
+        // Show player's dance
+        this.characterDanceElement.innerHTML = `
+          <img src="${this.danceGifs[this.selectedCharacter]}" style="width: 250px; height: 250px;">
+        `;
+        this.characterDanceElement.style.position = 'absolute';
+        this.characterDanceElement.style.left = '30%';
+        this.characterDanceElement.style.top = '40%';
+        this.characterDanceElement.style.transform = 'translate(-50%, -50%)';
+        this.characterDanceElement.style.display = 'block';
+        this.characterDanceElement.style.zIndex = '1001';
+      } else {
+        // Patrick victory dance
+        this.patrick.isDancing = true;
+        this.patrickDanceElement.style.position = 'absolute';
+        this.patrickDanceElement.style.left = '70%';
+        this.patrickDanceElement.style.top = '40%';
+        this.patrickDanceElement.style.transform = 'translate(-50%, -50%)';
+        this.patrickDanceElement.style.display = 'block';
+        this.patrickDanceElement.style.zIndex = '1001';
+      }
+
+      const gameOverScreen = document.getElementById('game-over-screen');
+      const gameOverTitle = document.getElementById('game-over-title');
+      gameOverTitle.textContent = playerWon ? 'You Won!' : 'Patrick Wins!';
+      gameOverScreen.classList.remove('hidden');
+
+      document.getElementById('return-to-select').onclick = () => {
+        location.reload();
+      };
+    }
+
+    gameLoop() {
+      if (this.gameActive) {
+        this.update();
+        this.draw();
+        requestAnimationFrame(() => this.gameLoop());
+      }
+    }
+  }
+  </script>
+
+  <!-- ================== INLINE game.js ================== -->
+  <script type="module">
+  /* ----------------- game.js content ----------------- */
+  import { GameEngine } from "./index.html"; // Trick for same-file "import"
+
+  // Because we're using a single file, we'll treat "index.html" as the module specifier.
+  // Some browsers won't allow it; if there's an import error, just inline the code or 
+  // remove the import syntax. For demonstration, let's keep the structure.
+
+  document.addEventListener('DOMContentLoaded', () => {
+    const characterCards = document.querySelectorAll('.character-card');
+    const startGameButton = document.getElementById('start-game');
+    const backgroundMusic = document.getElementById('background-music');
+
+    // Attempt to start background music quietly
+    backgroundMusic.volume = 0.3;
+    backgroundMusic.play().catch((e) => console.log('Autoplay prevented', e));
+
+    let selectedCharacter = null;
+    let gameEngine = null;
+
+    characterCards.forEach((card) => {
+      card.addEventListener('click', () => {
+        // Remove selection from all
+        characterCards.forEach((c) => c.classList.remove('selected'));
+        // Mark this one selected
+        card.classList.add('selected');
+        selectedCharacter = card.dataset.character;
+
+        // Show mission brief
+        document.querySelector('.mission-brief').classList.remove('hidden');
+      });
+    });
+
+    startGameButton.addEventListener('click', () => {
+      if (selectedCharacter) {
+        backgroundMusic.pause();
+
+        const characterSelectScreen = document.getElementById('character-select-screen');
+        const gameScreen = document.getElementById('game-screen');
+
+        characterSelectScreen.classList.add('hidden');
+        gameScreen.classList.remove('hidden');
+
+        gameEngine = new GameEngine(selectedCharacter);
+        gameEngine.start();
+      } else {
+        alert('Please select a character first!');
+      }
+    });
+
+    // Track mouse movement
+    window.addEventListener('mousemove', (e) => {
+      if (gameEngine) {
+        const rect = gameEngine.canvas.getBoundingClientRect();
+        gameEngine.lastMouseX = e.clientX - rect.left;
+        gameEngine.lastMouseY = e.clientY - rect.top;
+      }
+    });
+  });
+  </script>
 </body>
 </html>
