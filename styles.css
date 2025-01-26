@@ -1,0 +1,290 @@
+body, html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    font-family: Arial, sans-serif;
+}
+
+.game-container {
+    position: relative;
+    height: 100vh;
+    width: 100vw;
+    overflow: hidden;
+}
+
+.background-image {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url('/Windows.webp');
+    background-size: cover;
+    background-position: center;
+    z-index: -2;
+}
+
+.background-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(255, 255, 255, 0.7);
+    z-index: -1;
+}
+
+.character-select {
+    text-align: center;
+    padding: 20px;
+    position: relative;
+    z-index: 10;
+}
+
+.character-select h1 {
+    color: #333;
+    text-shadow: 2px 2px 4px rgba(255,255,255,0.5);
+}
+
+.character-grid {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.character-card {
+    cursor: pointer;
+    border: 3px solid transparent;
+    transition: all 0.3s ease;
+    padding: 10px;
+    border-radius: 10px;
+    background-color: rgba(255,255,255,0.8);
+    width: 150px; /* Fixed width to keep cards consistent */
+}
+
+.character-card:hover {
+    border-color: #FFD700;
+    transform: scale(1.05);
+}
+
+.character-card.selected {
+    border-color: #FF4500;
+    background-color: rgba(255, 69, 0, 0.2);
+}
+
+.character-card img {
+    max-width: 100%;
+    max-height: 150px;
+    object-fit: contain;
+}
+
+.hidden {
+    display: none;
+}
+
+#selected-character {
+    display: none;
+}
+
+#start-game {
+    margin-top: 20px;
+    padding: 10px 20px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#start-game:hover {
+    background-color: #45a049;
+}
+
+.game-screen {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url('/PVZ Lawn.jpg');
+    background-size: cover;
+    background-position: center;
+}
+
+#gameCanvas {
+    width: 100%;
+    height: 100%;
+}
+
+#game-ui {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    z-index: 100;
+}
+
+#health-bar {
+    width: 250px;
+    height: 25px;
+    background-color: #ff0000;
+    border: 2px solid #000;
+    border-radius: 10px;
+    overflow: hidden;
+    margin-top: 10px;  
+    position: relative;
+}
+
+#health-fill {
+    width: 100%;
+    height: 100%;
+    background-color: #00ff00;
+    transition: width 0.3s ease;
+}
+
+#health-text {
+    position: absolute;
+    width: 100%;
+    text-align: center;
+    color: white;
+    text-shadow: 1px 1px 2px black;
+    top: -25px;  
+    font-weight: bold;
+}
+
+#game-screen {
+    position: relative; 
+}
+
+.game-over-menu {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: rgba(255, 255, 255, 0.9);
+    padding: 30px;
+    border-radius: 15px;
+    text-align: center;
+    z-index: 1000;
+    box-shadow: 0 0 20px rgba(0,0,0,0.3);
+}
+
+#game-over-title {
+    font-size: 2em;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+#return-to-select {
+    padding: 15px 30px;
+    font-size: 1.2em;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+#return-to-select:hover {
+    background-color: #45a049;
+}
+
+/* Weapon styles */
+.weapon {
+    position: absolute;
+    width: 40px;
+    height: 40px;
+    pointer-events: none;
+}
+
+/* Mission Brief Styles */
+.mission-brief {
+  background-color: rgba(255, 255, 255, 0.9);
+  border-radius: 15px;
+  padding: 20px;
+  margin: 20px auto;
+  max-width: 800px;
+  box-shadow: 0 0 20px rgba(0,0,0,0.2);
+  text-align: left;
+}
+
+.mission-brief h2 {
+  color: #ff4500;
+  text-align: center;
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+
+.mission-content {
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+}
+
+.mission-image {
+  flex: 0 0 auto;
+  position: relative;
+}
+
+.mission-image img:nth-child(2) {
+  position: absolute;
+  bottom: -20px;
+  right: -20px;
+  transform: scale(0.7);
+}
+
+.mission-text {
+  flex: 1;
+}
+
+.story {
+  font-size: 16px;
+  line-height: 1.5;
+  color: #333;
+  margin-bottom: 15px;
+}
+
+.objective {
+  font-size: 18px;
+  color: #ff4500;
+  font-weight: bold;
+  margin-bottom: 15px;
+}
+
+.mission-details {
+  background-color: rgba(0, 0, 0, 0.05);
+  padding: 15px 30px;
+  border-radius: 10px;
+  list-style-type: none;
+}
+
+.mission-details li {
+  color: #666;
+  margin: 8px 0;
+  position: relative;
+}
+
+.mission-details li::before {
+  content: "•";
+  color: #ff4500;
+  font-weight: bold;
+  margin-right: 10px;
+}
+
+.mission-brief #start-game {
+  display: block;
+  margin: 20px auto 0;
+  padding: 15px 30px;
+  font-size: 1.2em;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.mission-brief #start-game:hover {
+  background-color: #45a049;
+}
