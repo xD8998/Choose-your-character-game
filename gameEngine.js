@@ -23,13 +23,13 @@ export class GameEngine {
 
     // Set initial music based on character/level
     if (selectedCharacter === 'Chill Guy') {
-      this.battleMusic.src = '/chill-guy-made-with-Voicemod.mp3';
+      this.battleMusic.src = 'chill-guy-made-with-Voicemod.mp3';
     } else if (selectedCharacter === 'Steve') {
-      this.battleMusic.src = '/Minecraft Chill...(Nostalgia Music Relax, Sleep.).mp3';
+      this.battleMusic.src = 'Minecraft Chill...(Nostalgia Music Relax, Sleep.).mp3';
     } else if (this.level === 2) {
-      this.battleMusic.src = '/Family Guy Instrumental Intro.mp3';
+      this.battleMusic.src = 'Family Guy Instrumental Intro.mp3';
     } else {
-      this.battleMusic.src = '/05. Loonboon.mp3';
+      this.battleMusic.src = '05. Loonboon.mp3';
     }
     
     // Set canvas size
@@ -87,7 +87,7 @@ export class GameEngine {
       };
       
       // Load Peter's sprite
-      this.peter.sprite.src = '/Peter_Griffin.png';
+      this.peter.sprite.src = 'Peter_Griffin.png';
       
       // Set up Peter's dance element
       this.peter.danceElement.style.cssText = `
@@ -95,20 +95,20 @@ export class GameEngine {
         display: none;
         z-index: 1001;
       `;
-      this.peter.danceElement.innerHTML = `<img src="/peter dancing.gif" style="width: 250px; height: 250px;">`;
+      this.peter.danceElement.innerHTML = `<img src="peter dancing.gif" style="width: 250px; height: 250px;">`;
       document.getElementById('game-screen').appendChild(this.peter.danceElement);
 
       this.windowsLogo = new Image();
-      this.windowsLogo.src = '/dfom9ho-0e411c0f-e367-480b-8c90-77ea71f64628.png';
+      this.windowsLogo.src = 'dfom9ho-0e411c0f-e367-480b-8c90-77ea71f64628.png';
       
       this.exitSign = new Image();
-      this.exitSign.src = '/Exit.png';
+      this.exitSign.src = 'Exit.png';
       
       this.trollface = new Image();
-      this.trollface.src = '/trollface (2).png';
+      this.trollface.src = 'trollface (2).png';
       
       this.sadSpongebob = new Image();
-      this.sadSpongebob.src = '/Captura de pantalla_14-12-2024_22935_www.bing.com.jpeg';
+      this.sadSpongebob.src = 'Captura de pantalla_14-12-2024_22935_www.bing.com.jpeg';
       
       this.exits = [];
       this.windowsLogos = [];
@@ -125,7 +125,7 @@ export class GameEngine {
     
     // Load background image
     this.backgroundImage = new Image();
-    this.backgroundImage.src = this.level === 1 ? '/Garden vs Deads 2 (pvz ripoff).jpg' : '/Courtyard.jpg';
+    this.backgroundImage.src = this.level === 1 ? 'Garden vs Deads 2 (pvz ripoff).jpg' : 'Courtyard.jpg';
 
     // Wait for images to load before using them
     const imageLoadPromises = [];
@@ -140,36 +140,36 @@ export class GameEngine {
       // Patrick sprites
       imageLoadPromises.push(new Promise(resolve => {
         this.patrick.sprite.onload = resolve;
-        this.patrick.sprite.src = '/Patrick_Star.svg.png';
+        this.patrick.sprite.src = 'Patrick_Star.svg.png';
       }));
       imageLoadPromises.push(new Promise(resolve => {
         this.patrick.smugSprite.onload = resolve;
-        this.patrick.smugSprite.src = '/OIP (2).jpg';
+        this.patrick.smugSprite.src = 'OIP (2).jpg';
       }));
     } else if (this.level === 2) {
       // Peter sprite
       imageLoadPromises.push(new Promise(resolve => {
         this.peter.sprite.onload = resolve;
-        this.peter.sprite.src = '/Peter_Griffin.png';
+        this.peter.sprite.src = 'Peter_Griffin.png';
       }));
 
       // Level 2 specific images
       imageLoadPromises.push(
         new Promise(resolve => {
           this.windowsLogo.onload = resolve;
-          this.windowsLogo.src = '/dfom9ho-0e411c0f-e367-480b-8c90-77ea71f64628.png';
+          this.windowsLogo.src = 'dfom9ho-0e411c0f-e367-480b-8c90-77ea71f64628.png';
         }),
         new Promise(resolve => {
           this.exitSign.onload = resolve;
-          this.exitSign.src = '/Exit.png';
+          this.exitSign.src = 'Exit.png';
         }),
         new Promise(resolve => {
           this.trollface.onload = resolve;
-          this.trollface.src = '/trollface (2).png';
+          this.trollface.src = 'trollface (2).png';
         }),
         new Promise(resolve => {
           this.sadSpongebob.onload = resolve;
-          this.sadSpongebob.src = '/Captura de pantalla_14-12-2024_22935_www.bing.com.jpeg';
+          this.sadSpongebob.src = 'Captura de pantalla_14-12-2024_22935_www.bing.com.jpeg';
         })
       );
     }
@@ -178,32 +178,32 @@ export class GameEngine {
     this.gunSprite = new Image();
     imageLoadPromises.push(new Promise(resolve => {
       this.gunSprite.onload = resolve;
-      this.gunSprite.src = '/Item_Glock-sharedassets4.assets-616.webp';
+      this.gunSprite.src = 'Item_Glock-sharedassets4.assets-616.webp';
     }));
 
     // Force field sprite
     this.forceFieldSprite = new Image();
     imageLoadPromises.push(new Promise(resolve => {
       this.forceFieldSprite.onload = resolve;
-      this.forceFieldSprite.src = '/electric.png';
+      this.forceFieldSprite.src = 'electric.png';
     }));
 
     // Update weapon sprites
     this.weaponSprites = {
-      'Steve': '/Cake.png',  
-      'Mario': '/pipe.png',
-      'Among Us': '/Apple.png', 
-      'Roblox Noob': '/Untitled.jpg',
-      'Chill Guy': '/ubpa3bopktloamguher5.png'  
+      'Steve': 'Cake.png',  
+      'Mario': 'pipe.png',
+      'Among Us': 'Apple.png', 
+      'Roblox Noob': 'Untitled.jpg',
+      'Chill Guy': 'ubpa3bopktloamguher5.png'  
     };
 
     // Add special gun weapon sprites
     this.gunWeaponSprites = {
-      'Steve': '/Cake.png',  
-      'Mario': '/pipe.png',
-      'Among Us': '/Golden-Apple.png', 
-      'Roblox Noob': '/Untitled.jpg',
-      'Chill Guy': '/ubpa3bopktloamguher5.png'  
+      'Steve': 'Cake.png',  
+      'Mario': 'pipe.png',
+      'Among Us': 'Golden-Apple.png', 
+      'Roblox Noob': 'Untitled.jpg',
+      'Chill Guy': 'ubpa3bopktloamguher5.png'  
     };
 
     // Wait for all images to load before starting
@@ -212,7 +212,7 @@ export class GameEngine {
     });
 
     // Add new audio elements
-    this.vineBoom = new Audio('/vine-boom.mp3');
+    this.vineBoom = new Audio('vine-boom.mp3');
     this.vineBoom.volume = 0.3;
     
     // Input handling
@@ -265,11 +265,11 @@ export class GameEngine {
     
     // Set up dance gifs for each character
     this.danceGifs = {
-      'Steve': '/minecraft-steve.gif',
-      'Mario': '/mario-mario-dancing.gif',
-      'Among Us': '/200w.gif',
-      'Roblox Noob': '/27187609c933f7c1009722b5fae6a4b4.gif',
-      'Chill Guy': '/chill-guy-in-autumn-season-pg22l237qdpr850c.gif'
+      'Steve': 'minecraft-steve.gif',
+      'Mario': 'mario-mario-dancing.gif',
+      'Among Us': '200w.gif',
+      'Roblox Noob': '27187609c933f7c1009722b5fae6a4b4.gif',
+      'Chill Guy': 'chill-guy-in-autumn-season-pg22l237qdpr850c.gif'
     };
     
     document.getElementById('game-screen').appendChild(this.characterDanceElement);
@@ -285,7 +285,7 @@ export class GameEngine {
         display: none;
         z-index: 1000;
       `;
-      this.patrickDanceElement.innerHTML = `<img src="/patrick-dancing.gif" style="width: 250px; height: 250px;">`;
+      this.patrickDanceElement.innerHTML = `<img src="patrick-dancing.gif" style="width: 250px; height: 250px;">`;
       document.getElementById('game-screen').appendChild(this.patrickDanceElement);
     }
     
@@ -396,11 +396,11 @@ export class GameEngine {
   
   getCharacterSprite(character) {
     const sprites = {
-      'Steve': '/the REAL REAL STEVE.jpg',
-      'Among Us': '/an871k4o1sn51 (1).png',
-      'Roblox Noob': '/OIP (1).jfif',
-      'Mario': '/smb1 mario idle.webp',
-      'Chill Guy': '/chill-guy.webp'  
+      'Steve': 'the REAL REAL STEVE.jpg',
+      'Among Us': 'an871k4o1sn51 (1).png',
+      'Roblox Noob': 'OIP (1).jfif',
+      'Mario': 'smb1 mario idle.webp',
+      'Chill Guy': 'chill-guy.webp'  
     };
     return sprites[character];
   }
@@ -525,7 +525,7 @@ export class GameEngine {
           health: 50,
           sprite: new Image()
         };
-        newFloppa.sprite.src = '/floppa_png-removebg-preview.png';
+        newFloppa.sprite.src = 'floppa_png-removebg-preview.png';
         this.floppas.push(newFloppa);
       }
     }
@@ -556,12 +556,12 @@ export class GameEngine {
       
       if (this.player.hasGun) {
         if (this.selectedCharacter === 'Mario') {
-          this.pipeSound = new Audio('/metal pipe.wav');
+          this.pipeSound = new Audio('metal pipe.wav');
           this.pipeSound.volume = 0.3;
           this.pipeSound.currentTime = 0;
           this.pipeSound.play();
         } else {
-          this.gunSound = new Audio('/gunshoot.mp3');
+          this.gunSound = new Audio('gunshoot.mp3');
           this.gunSound.volume = 0.3;
           this.gunSound.currentTime = 0;
           this.gunSound.play();
