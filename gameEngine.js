@@ -87,7 +87,7 @@ export class GameEngine {
       };
       
       // Load Peter's sprite
-      this.peter.sprite.src = 'Peter_Griffin.png';
+      this.peter.sprite.src = '/Peter_Griffin.png';
       
       // Set up Peter's dance element
       this.peter.danceElement.style.cssText = `
@@ -125,7 +125,7 @@ export class GameEngine {
     
     // Load background image
     this.backgroundImage = new Image();
-    this.backgroundImage.src = this.level === 1 ? 'Garden vs Deads 2 (pvz ripoff).jpg' : 'Courtyard.jpg';
+    this.backgroundImage.src = this.level === 1 ? 'Garden vs Deads 2 (pvz ripoff).jpg' : '/Courtyard.jpg';
 
     // Wait for images to load before using them
     const imageLoadPromises = [];
