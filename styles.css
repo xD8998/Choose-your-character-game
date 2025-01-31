@@ -1,191 +1,95 @@
-/* Remove default margin/padding */
 body, html {
-  margin: 0;
-  padding: 0;
-  height: 100%;
-  font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    font-family: Arial, sans-serif;
 }
 
-/* Container for the game */
 .game-container {
-  position: relative;
-  height: 100vh;
-  width: 100vw;
-  overflow: hidden;
+    position: relative;
+    height: 100vh;
+    width: 100vw;
+    overflow: hidden;
 }
 
-/* Background image example */
 .background-image {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  /* Use relative path */
-  background-image: url("./Windows.webp");
-  background-size: cover;
-  background-position: center;
-  z-index: -2;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url('/Windows.webp');
+    background-size: cover;
+    background-position: center;
+    z-index: -2;
 }
 
 .background-overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(255, 255, 255, 0.7);
-  z-index: -1;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(255, 255, 255, 0.7);
+    z-index: -1;
 }
 
-/* Character Select Screen */
 .character-select {
-  text-align: center;
-  padding: 20px;
-  position: relative;
-  z-index: 10;
+    text-align: center;
+    padding: 20px;
+    position: relative;
+    z-index: 10;
 }
 
 .character-select h1 {
-  color: #333;
-  text-shadow: 2px 2px 4px rgba(255,255,255,0.5);
+    color: #333;
+    text-shadow: 2px 2px 4px rgba(255,255,255,0.5);
 }
 
 .character-grid {
-  display: flex;
-  justify-content: center;
-  gap: 20px;
-  flex-wrap: wrap;
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
 }
 
 .character-card {
-  cursor: pointer;
-  border: 3px solid transparent;
-  transition: all 0.3s ease;
-  padding: 10px;
-  border-radius: 10px;
-  background-color: rgba(255,255,255,0.8);
-  width: 150px; /* Fixed width to keep cards consistent */
+    cursor: pointer;
+    border: 3px solid transparent;
+    transition: all 0.3s ease;
+    padding: 10px;
+    border-radius: 10px;
+    background-color: rgba(255,255,255,0.8);
+    width: 150px; /* Fixed width to keep cards consistent */
 }
 
 .character-card:hover {
-  border-color: #FFD700;
-  transform: scale(1.05);
+    border-color: #FFD700;
+    transform: scale(1.05);
 }
 
 .character-card.selected {
-  border-color: #FF4500;
-  background-color: rgba(255, 69, 0, 0.2);
+    border-color: #FF4500;
+    background-color: rgba(255, 69, 0, 0.2);
 }
 
 .character-card img {
-  max-width: 100%;
-  max-height: 150px;
-  object-fit: contain;
+    max-width: 100%;
+    max-height: 150px;
+    object-fit: contain;
 }
 
-/* Hidden class to toggle visibility */
 .hidden {
-  display: none;
+    display: none;
 }
 
 #selected-character {
-  display: none;
+    display: none;
 }
 
-#start-game {
-  margin-top: 20px;
-  padding: 10px 20px;
-  background-color: #4CAF50;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-}
-
-#start-game:hover {
-  background-color: #45a049;
-}
-
-/* Main game screen container */
-.game-screen {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  /* Use relative path for background */
-  background-image: url("./PVZ Lawn.jpg");
-  background-size: cover;
-  background-position: center;
-}
-
-#gameCanvas {
-  width: 100%;
-  height: 100%;
-}
-
-#game-ui {
-  position: absolute;
-  top: 10px;
-  left: 10px;
-  z-index: 100;
-}
-
-/* Health bar */
-#health-bar {
-  width: 250px;
-  height: 25px;
-  background-color: #ff0000;
-  border: 2px solid #000;
-  border-radius: 10px;
-  overflow: hidden;
-  margin-top: 10px;
-  position: relative;
-}
-
-#health-fill {
-  width: 100%;
-  height: 100%;
-  background-color: #00ff00;
-  transition: width 0.3s ease;
-}
-
-#health-text {
-  position: absolute;
-  width: 100%;
-  text-align: center;
-  color: white;
-  text-shadow: 1px 1px 2px black;
-  top: -25px;
-  font-weight: bold;
-}
-
-#game-screen {
-  position: relative;
-}
-
-/* Game Over Menu */
-.game-over-menu {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background-color: rgba(255, 255, 255, 0.9);
-  padding: 30px;
-  border-radius: 15px;
-  text-align: center;
-  z-index: 1000;
-  box-shadow: 0 0 20px rgba(0,0,0,0.3);
-}
-
-#game-over-title {
-  font-size: 2em;
-  margin-bottom: 20px;
-  color: #333;
-}
-
-#return-to-select {
+.start-game-button {
+  display: block;
+  margin: 20px auto 0;
   padding: 15px 30px;
   font-size: 1.2em;
   background-color: #4CAF50;
@@ -196,16 +100,119 @@ body, html {
   transition: background-color 0.3s ease;
 }
 
-#return-to-select:hover {
+.start-game-button:hover {
   background-color: #45a049;
+}
+
+#start-game {
+    margin-top: 20px;
+    padding: 10px 20px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#start-game:hover {
+    background-color: #45a049;
+}
+
+.game-screen {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url('/PVZ Lawn.jpg');
+    background-size: cover;
+    background-position: center;
+}
+
+#gameCanvas {
+    width: 100%;
+    height: 100%;
+}
+
+#game-ui {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    z-index: 100;
+}
+
+#health-bar {
+    width: 250px;
+    height: 25px;
+    background-color: #ff0000;
+    border: 2px solid #000;
+    border-radius: 10px;
+    overflow: hidden;
+    margin-top: 10px;  
+    position: relative;
+}
+
+#health-fill {
+    width: 100%;
+    height: 100%;
+    background-color: #00ff00;
+    transition: width 0.3s ease;
+}
+
+#health-text {
+    position: absolute;
+    width: 100%;
+    text-align: center;
+    color: white;
+    text-shadow: 1px 1px 2px black;
+    top: -25px;  
+    font-weight: bold;
+}
+
+#game-screen {
+    position: relative; 
+}
+
+.game-over-menu {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: rgba(255, 255, 255, 0.9);
+    padding: 30px;
+    border-radius: 15px;
+    text-align: center;
+    z-index: 1000;
+    box-shadow: 0 0 20px rgba(0,0,0,0.3);
+}
+
+#game-over-title {
+    font-size: 2em;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+#return-to-select {
+    padding: 15px 30px;
+    font-size: 1.2em;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+#return-to-select:hover {
+    background-color: #45a049;
 }
 
 /* Weapon styles */
 .weapon {
-  position: absolute;
-  width: 40px;
-  height: 40px;
-  pointer-events: none;
+    position: absolute;
+    width: 40px;
+    height: 40px;
+    pointer-events: none;
 }
 
 /* Mission Brief Styles */
@@ -283,8 +290,249 @@ body, html {
 }
 
 .mission-brief #start-game {
+  display: none;
+}
+
+/* Character Details Panel */
+.character-details {
+  position: fixed;
+  right: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: rgba(255, 255, 255, 0.9);
+  padding: 20px;
+  border-radius: 15px;
+  width: 300px;
+  box-shadow: 0 0 20px rgba(0,0,0,0.2);
+  z-index: 100;
+}
+
+.character-details.hidden {
+  display: none;
+}
+
+.character-details img {
+  width: 100px;
+  height: 100px;
+  object-fit: contain;
+  margin-bottom: 10px;
+}
+
+.character-details h3 {
+  color: #ff4500;
+  margin: 10px 0;
+}
+
+.character-details .weapon-info {
+  display: flex;
+  align-items: center;
+  margin: 10px 0;
+}
+
+.character-details .weapon-info img {
+  width: 50px;
+  height: 50px;
+  margin-right: 10px;
+}
+
+.character-details .damage-info {
+  color: #ff4500;
+  font-weight: bold;
+}
+
+.controls-section {
+  margin-top: 15px;
+  padding-top: 15px;
+  border-top: 2px solid rgba(0,0,0,0.1);
+}
+
+.controls-section h4 {
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.controls-list {
+  list-style: none;
+  padding: 0;
+}
+
+.controls-list li {
+  margin: 5px 0;
+  color: #666;
+}
+
+.control-key {
+  display: inline-block;
+  background-color: #f0f0f0;
+  padding: 2px 8px;
+  border-radius: 4px;
+  margin-right: 8px;
+  font-weight: bold;
+}
+
+/* Repository Styles */
+.repository-button {
+  position: fixed;
+  left: 20px;  
+  bottom: 20px; 
+  padding: 10px 20px;
+  background-color: #4a90e2;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1.1em;
+  z-index: 1000;
+}
+
+.repository-button:hover {
+  background-color: #357abd;
+}
+
+.repository-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  color: #333;
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+.repository-container::-webkit-scrollbar {
+  width: 12px;
+}
+
+.repository-container::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.5);
+  border-radius: 6px;
+}
+
+.repository-container::-webkit-scrollbar-thumb {
+  background: #4a90e2;
+  border-radius: 6px;
+}
+
+.repository-container::-webkit-scrollbar-thumb:hover {
+  background: #357abd;
+}
+
+.repository-tabs {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.tab-button {
+  padding: 10px 20px;
+  background-color: #f0f0f0;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1.1em;
+}
+
+.tab-button.active {
+  background-color: #4a90e2;
+  color: white;
+}
+
+.tab-content {
+  display: none;
+}
+
+.tab-content.active {
   display: block;
-  margin: 20px auto 0;
+}
+
+.enemy-card, .powerup-card {
+  background-color: rgba(255, 255, 255, 0.9);
+  border-radius: 10px;
+  padding: 20px;
+  margin-bottom: 20px;
+  display: flex;
+  gap: 20px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.enemy-card img, .powerup-card img {
+  width: 150px;
+  height: 150px;
+  object-fit: contain;
+}
+
+.enemy-info, .powerup-info {
+  flex: 1;
+}
+
+.enemy-type, .powerup-duration {
+  color: #4a90e2;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.enemy-stats, .powerup-stats {
+  color: #ff4500;
+  margin: 5px 0;
+}
+
+.enemy-description, .powerup-description,
+.powerup-tips, .enemy-tips {
+  margin: 10px 0;
+  line-height: 1.5;
+}
+
+.return-button {
+  display: block;
+  margin: 20px auto;
+  padding: 15px 30px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1.2em;
+}
+
+.return-button:hover {
+  background-color: #45a049;
+}
+
+/* Level Select Button Styles */
+.level-select-button {
+  position: fixed;
+  left: 20px;  
+  bottom: 80px;
+  padding: 10px 20px;
+  background-color: #45a049;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1.1em;
+  z-index: 1000;
+  display: none;
+}
+
+.level-select-button:hover {
+  background-color: #357a38;
+}
+
+/* Level Select Menu */
+.level-select-menu {
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  background-color: rgba(255, 255, 255, 0.95);
+  padding: 30px;
+  border-radius: 15px;
+  text-align: center;
+  z-index: 1000;
+  box-shadow: 0 0 20px rgba(0,0,0,0.3);
+}
+
+.level-button {
+  margin: 10px;
   padding: 15px 30px;
   font-size: 1.2em;
   background-color: #4CAF50;
@@ -293,8 +541,116 @@ body, html {
   border-radius: 5px;
   cursor: pointer;
   transition: background-color 0.3s ease;
+  width: 200px;
 }
 
-.mission-brief #start-game:hover {
+.level-button:hover:not(.locked) {
   background-color: #45a049;
+}
+
+.level-button.locked {
+  background-color: #cccccc;
+  cursor: not-allowed;
+  position: relative;
+}
+
+.level-button.locked::after {
+  content: "🔒";
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.close-menu {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  color: #666;
+}
+
+.close-menu:hover {
+  color: #333;
+}
+
+/* Completion Message Styles */
+.completion-message {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: rgba(255, 255, 255, 0.95);
+  padding: 30px;
+  border-radius: 15px;
+  text-align: center;
+  z-index: 2000;
+  box-shadow: 0 0 20px rgba(0,0,0,0.3);
+}
+
+.completion-message h2 {
+  color: #ff4500;
+  margin-bottom: 20px;
+}
+
+.completion-message p {
+  margin: 10px 0;
+  color: #333;
+  font-size: 1.1em;
+}
+
+.unlock-note {
+  display: block;
+  color: #4CAF50;
+  font-size: 0.8em;
+  margin-top: 5px;
+}
+
+/* Mobile Controls */
+.mobile-controls {
+  display: none;
+  position: fixed;
+  bottom: 20px;  
+  left: 0;
+  right: 0;
+  z-index: 1000;
+}
+
+.movement-pad {
+  position: absolute;
+  left: 20px;
+  bottom: 20px;
+  width: 150px;
+  height: 150px;
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.5);
+}
+
+.shoot-button {
+  position: absolute;
+  right: 40px;
+  bottom: 40px;
+  width: 80px;
+  height: 80px;
+  background: rgba(255, 0, 0, 0.3);
+  border-radius: 50%;
+  border: 2px solid rgba(255, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  color: white;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* Show mobile controls only on touch devices */
+@media (hover: none) and (pointer: coarse) {
+  .mobile-controls {
+    display: block;
+  }
 }

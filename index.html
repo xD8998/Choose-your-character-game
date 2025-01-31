@@ -1,925 +1,370 @@
-<!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8" />
   <title>Character Select & Game</title>
-  <style>
-    /* ========== INLINE CSS ========== */
-    body, html {
-        margin: 0;
-        padding: 0;
-        height: 100%;
-        font-family: Arial, sans-serif;
-    }
-
-    .game-container {
-        position: relative;
-        height: 100vh;
-        width: 100vw;
-        overflow: hidden;
-    }
-
-    .background-image {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        /* Same-folder image: Windows.webp */
-        background-image: url('Windows.webp');
-        background-size: cover;
-        background-position: center;
-        z-index: -2;
-    }
-
-    .background-overlay {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background-color: rgba(255, 255, 255, 0.7);
-        z-index: -1;
-    }
-
-    .character-select {
-        text-align: center;
-        padding: 20px;
-        position: relative;
-        z-index: 10;
-    }
-
-    .character-select h1 {
-        color: #333;
-        text-shadow: 2px 2px 4px rgba(255,255,255,0.5);
-    }
-
-    .character-grid {
-        display: flex;
-        justify-content: center;
-        gap: 20px;
-        flex-wrap: wrap;
-    }
-
-    .character-card {
-        cursor: pointer;
-        border: 3px solid transparent;
-        transition: all 0.3s ease;
-        padding: 10px;
-        border-radius: 10px;
-        background-color: rgba(255,255,255,0.8);
-        width: 150px; /* Fixed width to keep cards consistent */
-    }
-
-    .character-card:hover {
-        border-color: #FFD700;
-        transform: scale(1.05);
-    }
-
-    .character-card.selected {
-        border-color: #FF4500;
-        background-color: rgba(255, 69, 0, 0.2);
-    }
-
-    .character-card img {
-        max-width: 100%;
-        max-height: 150px;
-        object-fit: contain;
-    }
-
-    .hidden {
-        display: none;
-    }
-
-    #selected-character {
-        display: none;
-    }
-
-    #start-game {
-        margin-top: 20px;
-        padding: 10px 20px;
-        background-color: #4CAF50;
-        color: white;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-    }
-
-    #start-game:hover {
-        background-color: #45a049;
-    }
-
-    .game-screen {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        /* Same-folder image: PVZ Lawn.jpg */
-        background-image: url('PVZ Lawn.jpg');
-        background-size: cover;
-        background-position: center;
-    }
-
-    #gameCanvas {
-        width: 100%;
-        height: 100%;
-    }
-
-    #game-ui {
-        position: absolute;
-        top: 10px;
-        left: 10px;
-        z-index: 100;
-    }
-
-    #health-bar {
-        width: 250px;
-        height: 25px;
-        background-color: #ff0000;
-        border: 2px solid #000;
-        border-radius: 10px;
-        overflow: hidden;
-        margin-top: 10px;
-        position: relative;
-    }
-
-    #health-fill {
-        width: 100%;
-        height: 100%;
-        background-color: #00ff00;
-        transition: width 0.3s ease;
-    }
-
-    #health-text {
-        position: absolute;
-        width: 100%;
-        text-align: center;
-        color: white;
-        text-shadow: 1px 1px 2px black;
-        top: -25px;
-        font-weight: bold;
-    }
-
-    #game-screen {
-        position: relative;
-    }
-
-    .game-over-menu {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        background-color: rgba(255, 255, 255, 0.9);
-        padding: 30px;
-        border-radius: 15px;
-        text-align: center;
-        z-index: 1000;
-        box-shadow: 0 0 20px rgba(0,0,0,0.3);
-    }
-
-    #game-over-title {
-        font-size: 2em;
-        margin-bottom: 20px;
-        color: #333;
-    }
-
-    #return-to-select {
-        padding: 15px 30px;
-        font-size: 1.2em;
-        background-color: #4CAF50;
-        color: white;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-        transition: background-color 0.3s ease;
-    }
-
-    #return-to-select:hover {
-        background-color: #45a049;
-    }
-
-    /* Weapon styles */
-    .weapon {
-        position: absolute;
-        width: 40px;
-        height: 40px;
-        pointer-events: none;
-    }
-
-    /* Mission Brief Styles */
-    .mission-brief {
-      background-color: rgba(255, 255, 255, 0.9);
-      border-radius: 15px;
-      padding: 20px;
-      margin: 20px auto;
-      max-width: 800px;
-      box-shadow: 0 0 20px rgba(0,0,0,0.2);
-      text-align: left;
-    }
-
-    .mission-brief h2 {
-      color: #ff4500;
-      text-align: center;
-      font-size: 24px;
-      margin-bottom: 20px;
-    }
-
-    .mission-content {
-      display: flex;
-      gap: 20px;
-      align-items: flex-start;
-    }
-
-    .mission-image {
-      flex: 0 0 auto;
-      position: relative;
-    }
-
-    .mission-image img:nth-child(2) {
-      position: absolute;
-      bottom: -20px;
-      right: -20px;
-      transform: scale(0.7);
-    }
-
-    .mission-text {
-      flex: 1;
-    }
-
-    .story {
-      font-size: 16px;
-      line-height: 1.5;
-      color: #333;
-      margin-bottom: 15px;
-    }
-
-    .objective {
-      font-size: 18px;
-      color: #ff4500;
-      font-weight: bold;
-      margin-bottom: 15px;
-    }
-
-    .mission-details {
-      background-color: rgba(0, 0, 0, 0.05);
-      padding: 15px 30px;
-      border-radius: 10px;
-      list-style-type: none;
-    }
-
-    .mission-details li {
-      color: #666;
-      margin: 8px 0;
-      position: relative;
-    }
-
-    .mission-details li::before {
-      content: "•";
-      color: #ff4500;
-      font-weight: bold;
-      margin-right: 10px;
-    }
-
-    .mission-brief #start-game {
-      display: block;
-      margin: 20px auto 0;
-      padding: 15px 30px;
-      font-size: 1.2em;
-      background-color: #4CAF50;
-      color: white;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      transition: background-color 0.3s ease;
-    }
-
-    .mission-brief #start-game:hover {
-      background-color: #45a049;
-    }
-  </style>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+  <div id="game-container" class="game-container">
+    <!-- Character Select Screen -->
+    <div id="character-select-screen">
+      <div class="background-image"></div>
+      <div class="background-overlay"></div>
+      <div id="character-details" class="character-details hidden"></div>
+      <div class="character-select">
+        <h1>Choose Your Character</h1>
+        <div class="mission-brief hidden">
+          <div id="level1-brief">
+            <h2>Level 1: Patrick's Floppa Army</h2>
+            <div class="mission-content">
+              <div class="mission-image">
+                <img src="/Patrick_Star.svg.png" alt="Patrick with Floppa" style="width: 200px;">
+                <img src="/floppa_png-removebg-preview.png" alt="Floppa" style="width: 150px;">
+              </div>
+              <div class="mission-text">
+                <p class="story">Patrick Star has gone mad with power! After discovering a mysterious ability to command an army of Floppas, 
+                he's taken over the peaceful garden and threatens to expand his territory. His Floppa minions are causing chaos everywhere!</p>
+                <p class="objective">Your Mission: Defeat Patrick Star and his army of Floppa companions before his power grows too strong!</p>
+                <ul class="mission-details">
+                  <li>Boss Health: 300 HP</li>
+                  <li>Watch out for Floppa reinforcements!</li>
+                  <li>Find weapon upgrades to increase your damage!</li>
+                </ul>
+              </div>
+            </div>
+            <button id="start-game-level1" class="start-game-button">Start Level 1</button>
+          </div>
 
-  <!-- =========== CHARACTER SELECT SCREEN =========== -->
-  <div class="game-container" id="character-select-screen">
-    <div class="background-image"></div>
-    <div class="background-overlay"></div>
-
-    <div class="character-select">
-      <h1>Select Your Character</h1>
-      <div class="character-grid">
-        <!-- data-character must match the logic in the JS class for loading sprites -->
-        <div class="character-card" data-character="Steve">
-          <img src="the REAL REAL STEVE.jpg" alt="Steve" />
-          <p>Steve</p>
+          <div id="level2-brief" class="hidden">
+            <h2>Level 2: Peter's Hotel of Despair</h2>
+            <div class="mission-content">
+              <div class="mission-image">
+                <img src="/Peter_Griffin.png" alt="Peter Griffin" style="width: 200px;">
+                <img src="/trollface (2).png" alt="Trollface" style="width: 150px;">
+              </div>
+              <div class="mission-text">
+                <p class="story">After defeating Patrick, a new threat emerges in a mysterious liminal hotel. Peter Griffin has taken control 
+                of this unsettling space, using reality-bending powers to create a maze of deadly exits and Windows logos!</p>
+                <p class="objective">Your Mission: Survive Peter's mind games and defeat him before you lose your sanity!</p>
+                <ul class="mission-details">
+                  <li>Boss Health: 500 HP</li>
+                  <li>Take 3 damage per hit from Peter!</li>
+                  <li>Avoid fake exits - they're instant death!</li>
+                  <li>Watch out for Windows logos - they blind and damage you!</li>
+                  <li>Stay above 5 HP or Windows logos become lethal!</li>
+                </ul>
+              </div>
+            </div>
+            <button id="start-game-level2" class="start-game-button">Start Level 2</button>
+          </div>
+          <button id="start-game" class="hidden">Start Game</button>
         </div>
-
-        <div class="character-card" data-character="Mario">
-          <img src="smb1 mario idle.webp" alt="Mario" />
-          <p>Mario</p>
+        <button id="level-select-button" class="level-select-button" style="display: none;">Level Select</button>
+        <div id="level-select-menu" class="level-select-menu hidden">
+          <button class="close-menu">&times;</button>
+          <h2>Select Level</h2>
+          <button class="level-button" data-level="1">Level 1: Patrick's Floppa Army</button>
+          <button class="level-button" data-level="2">Level 2: Peter's Hotel of Despair</button>
         </div>
-
-        <div class="character-card" data-character="Among Us">
-          <img src="an871k4o1sn51 (1).png" alt="Among Us" />
-          <p>Among Us</p>
-        </div>
-
-        <div class="character-card" data-character="Roblox Noob">
-          <img src="OIP (1).jfif" alt="Roblox Noob" />
-          <p>Roblox Noob</p>
+        <div class="character-grid">
+          <div class="character-card" data-character="Steve">
+            <img src="/the REAL REAL STEVE.jpg" alt="Steve">
+            <p>Steve</p>
+          </div>
+          <div class="character-card" data-character="Among Us">
+            <img src="/an871k4o1sn51 (1).png" alt="Among Us">
+            <p>Among Us</p>
+          </div>
+          <div class="character-card" data-character="Roblox Noob">
+            <img src="/OIP (1).jfif" alt="Roblox Noob">
+            <p>Roblox Noob</p>
+          </div>
+          <div class="character-card" data-character="Mario">
+            <img src="/smb1 mario idle.webp" alt="Mario">
+            <p>Mario</p>
+          </div>
+          <div class="character-card" data-character="Chill Guy" style="display: none">
+            <img src="/chill-guy.webp" alt="Chill Guy">
+            <p>Chill Guy</p>
+            <span class="unlock-note">Special: Slows enemies to 50% speed for 3 seconds</span>
+            <span class="unlock-note">(Unlocked after beating Level 2)</span>
+          </div>
         </div>
       </div>
+    </div>
 
-      <!-- Mission Brief (initially hidden) -->
-      <div class="mission-brief hidden">
-        <h2>Mission Brief</h2>
-        <div class="mission-content">
-          <div class="mission-image">
-            <img src="Patrick_Star.svg.png" alt="Patrick">
-            <img src="floppa_png-removebg-preview.png" alt="Floppa">
+    <!-- Repository Screen -->
+    <div id="repository-screen" class="hidden">
+      <div class="background-image"></div>
+      <div class="background-overlay"></div>
+      <div class="repository-container">
+        <h1>Enemy & Power-up Repository</h1>
+        <div class="repository-tabs">
+          <button class="tab-button active" data-tab="enemies">Enemies</button>
+          <button class="tab-button" data-tab="powerups">Power-ups</button>
+          <button class="tab-button" data-tab="traps">Traps</button>
+        </div>
+        
+        <div class="repository-content">
+          <!-- Enemies Tab -->
+          <div id="enemies-tab" class="tab-content active">
+            <div class="enemy-card">
+              <img src="/Patrick_Star.svg.png" alt="Patrick">
+              <div class="enemy-info">
+                <h3>Patrick Star</h3>
+                <p class="enemy-type">Boss Enemy - Level 1</p>
+                <p class="enemy-stats">Health: 300 HP</p>
+                <p class="enemy-stats">Attack: 2 damage/hit</p>
+                <p class="enemy-description">A formidable foe who commands an army of Floppas. Known for his erratic movement patterns and ability to summon reinforcements.</p>
+                <p class="enemy-tips">Strategy: Keep your distance and focus on dodging his attacks while dealing with Floppa minions.</p>
+              </div>
+            </div>
+            
+            <div class="enemy-card">
+              <img src="/floppa_png-removebg-preview.png" alt="Floppa">
+              <div class="enemy-info">
+                <h3>Floppa Minion</h3>
+                <p class="enemy-type">Regular Enemy - Level 1</p>
+                <p class="enemy-stats">Health: 50 HP</p>
+                <p class="enemy-stats">Attack: 0.5 damage/hit</p>
+                <p class="enemy-description">Patrick's loyal companions. These fast-moving creatures chase the player relentlessly.</p>
+                <p class="enemy-tips">Strategy: Eliminate quickly before they can swarm you. They're weaker but dangerous in groups.</p>
+              </div>
+            </div>
+
+            <div class="enemy-card level2-content">
+              <img src="/Peter_Griffin.png" alt="Peter Griffin">
+              <div class="enemy-info">
+                <h3>Peter Griffin</h3>
+                <p class="enemy-type">Boss Enemy - Level 2</p>
+                <p class="enemy-stats">Health: 500 HP</p>
+                <p class="enemy-stats">Attack: 3 damage/hit</p>
+                <p class="enemy-stats">Special Abilities: Reality Manipulation</p>
+                <p class="enemy-description">A dangerous foe who bends reality itself. Can spawn deadly exits and Windows logos that blind and damage players.</p>
+                <p class="enemy-tips">Strategy: Stay above 5 HP to survive Windows logo attacks. Avoid all exits as they cause instant death.</p>
+              </div>
+            </div>
           </div>
-          <div class="mission-text">
-            <p class="story">
-              Patrick and his army of Floppas have invaded your lawn.
-              Only you can stop them! Choose your fighter, outsmart Patrick,
-              and reclaim your turf!
-            </p>
-            <p class="objective">Objective: Defeat Patrick and his Floppa minions!</p>
-            <ul class="mission-details">
-              <li>Use W, A, S, D to move</li>
-              <li>Press F to attack</li>
-              <li>Pick up guns for enhanced firepower (time-limited)</li>
-            </ul>
+
+          <!-- Power-ups Tab -->
+          <div id="powerups-tab" class="tab-content">
+            <div class="powerup-card">
+              <img src="/Item_Glock-sharedassets4.assets-616.webp" alt="Gun Power-up">
+              <div class="powerup-info">
+                <h3>Gun Power-up</h3>
+                <p class="powerup-type">Level 1 Power-up</p>
+                <p class="powerup-duration">Duration: 30 seconds</p>
+                <p class="powerup-stats">Damage Boost: 40-60 damage</p>
+                <p class="powerup-description">A powerful weapon that significantly increases attack damage and projectile speed.</p>
+                <p class="powerup-tips">Strategy: Time your pickup carefully for maximum effect during intense battles.</p>
+              </div>
+            </div>
+
+            <div class="powerup-card level2-content">
+              <img src="/electric.png" alt="Force Field">
+              <div class="powerup-info">
+                <h3>Force Field</h3>
+                <p class="powerup-type">Level 2 Power-up</p>
+                <p class="powerup-duration">Duration: 20 seconds</p>
+                <p class="powerup-description">Creates an impenetrable energy shield that blocks all damage and negative effects, including projectiles like trollfaces and Windows logos.</p>
+                <p class="powerup-tips">Strategy: Use during intense attacks or when cornered. Blocks all incoming damage and effects!</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Traps Tab -->
+          <div id="traps-tab" class="tab-content">
+            <div class="enemy-card level2-content">
+              <img src="/Exit.png" alt="Exit Trap">
+              <div class="enemy-info">
+                <h3>Exit Trap</h3>
+                <p class="enemy-type">Environmental Hazard - Level 2</p>
+                <p class="enemy-stats">Effect: Instant Death</p>
+                <p class="enemy-description">A deceptive trap that appears as an exit door. Touching it results in immediate death unless protected by a force field.</p>
+                <p class="enemy-tips">Strategy: Avoid at all costs! These appear more frequently as Peter's health decreases.</p>
+              </div>
+            </div>
+
+            <div class="enemy-card level2-content">
+              <img src="/dfom9ho-0e411c0f-e367-480b-8c90-77ea71f64628.png" alt="Windows XP Logo">
+              <div class="enemy-info">
+                <h3>Windows XP Logo</h3>
+                <p class="enemy-type">Environmental Hazard - Level 2</p>
+                <p class="enemy-stats">Effect: Halves current health & temporarily blinds</p>
+                <p class="enemy-stats">Special: Instant death if health ≤ 5</p>
+                <p class="enemy-description">A reality-bending hazard that can be placed or thrown. Creates a blinding effect and deals massive damage.</p>
+                <p class="enemy-tips">Strategy: Maintain health above 5 HP and use force fields to protect against them.</p>
+              </div>
+            </div>
+
+            <div class="enemy-card level2-content">
+              <img src="/trollface (2).png" alt="Trollface">
+              <div class="enemy-info">
+                <h3>Trollface</h3>
+                <p class="enemy-type">Projectile Hazard - Level 2</p>
+                <p class="enemy-stats">Damage: 10 per hit</p>
+                <p class="enemy-description">A menacing projectile thrown by Peter Griffin. Moves quickly and deals consistent damage.</p>
+                <p class="enemy-tips">Strategy: Keep moving and watch Peter's attack patterns to dodge effectively.</p>
+              </div>
+            </div>
           </div>
         </div>
-        <button id="start-game">Start Game</button>
+        
+        <button id="return-to-menu" class="return-button">Return to Menu</button>
       </div>
+    </div>
+
+    <!-- Game Screen (Initially Hidden) -->
+    <div id="game-screen" class="game-screen hidden">
+      <canvas id="gameCanvas"></canvas>
+      <div id="game-ui">
+        <div id="health-bar">
+          <div id="health-fill"></div>
+        </div>
+      </div>
+      <div class="mobile-controls">
+        <div class="movement-pad"></div>
+        <div class="shoot-button">🎯</div>
+      </div>
+    </div>
+
+    <!-- Game Over Screen -->
+    <div id="game-over-screen" class="hidden">
+      <div class="game-over-menu">
+        <h2 id="game-over-title"></h2>
+        <button id="return-to-select">Return to Character Select</button>
+      </div>
+    </div>
+
+    <!-- Add after level 2 completion message -->
+    <div id="completion-message" class="completion-message hidden">
+      <h2>Congratulations!</h2>
+      <p>You've completed all currently available levels!</p>
+      <p>More levels coming soon...</p>
+      <p>New character unlocked: Chill Guy!</p>
+      <p>Feel free to keep playing with the Level Select and explore the Repository.</p>
     </div>
   </div>
-
-  <!-- =========== ACTUAL GAME SCREEN (hidden by default) =========== -->
-  <div id="game-screen" class="game-screen hidden">
-    <canvas id="gameCanvas"></canvas>
-
-    <div id="game-ui">
-      <div id="health-bar">
-        <div id="health-fill"></div>
-        <div id="health-text">Health</div>
-      </div>
-    </div>
-
-    <!-- =========== GAME OVER MENU =========== -->
-    <div id="game-over-screen" class="game-over-menu hidden">
-      <h1 id="game-over-title"></h1>
-      <button id="return-to-select">Return to Character Select</button>
-    </div>
-  </div>
-
-  <!-- =========== AUDIO ELEMENTS =========== -->
-  <audio id="background-music" src="Minecraft Chill...(Nostalgia Music Relax, Sleep.).mp3" loop></audio>
-  <audio id="battle-music" src="05. Loonboon.mp3" loop></audio>
-
-  <!-- =========== ALL JS IN ONE SCRIPT =========== -->
+  
+  <audio id="background-music" loop>
+    <source src="/Elevator Music.mp3" type="audio/mp3">
+  </audio>
+  
+  <audio id="battle-music" loop>
+    <source src="/05. Loonboon.mp3" type="audio/mp3">
+  </audio>
+  
+  <audio id="vine-boom">
+    <source src="/vine-boom.mp3" type="audio/mp3">
+  </audio>
+  
   <script>
-    /*************************************************************
-     *   GAME ENGINE CLASS (no exports, so it's just global)
-     *************************************************************/
-    class GameEngine {
-      constructor(selectedCharacter) {
-        this.canvas = document.getElementById('gameCanvas');
-        this.ctx = this.canvas.getContext('2d');
-        this.selectedCharacter = selectedCharacter;
-        this.gameActive = true;
-
-        // Set canvas size
-        this.resizeCanvas();
-        window.addEventListener('resize', () => this.resizeCanvas());
-
-        // Player state
-        this.player = {
-          x: 100,
-          y: 100,
-          speed: 5,
-          width: 70,
-          height: 70,
-          health: 100,
-          hasGun: false,
-          sprite: new Image(),
-          lastAttack: 0,
-          attackCooldown: 1000
-        };
-
-        // Patrick
-        this.patrick = {
-          x: 500,
-          y: 300,
-          width: 80,
-          height: 80,
-          health: 300,
-          speed: 2,
-          direction: 1,
-          moveTimer: 0,
-          sprite: new Image(),
-          smugSprite: new Image(),
-          danceSprite: null,
-          isDancing: false,
-          isSmug: false
-        };
-
-        // Arrays
-        this.floppas = [];
-        this.projectiles = [];
-        this.gunPickups = [];
-
-        // Audio elements
-        this.battleMusic = document.getElementById('battle-music');
-        this.backgroundMusic = document.getElementById('background-music');
-
-        // Switch background music -> battle music
-        if (selectedCharacter === 'Steve') {
-          this.battleMusic.src = 'Minecraft Chill...(Nostalgia Music Relax, Sleep.).mp3';
-        } else {
-          this.battleMusic.src = '05. Loonboon.mp3';
-        }
-
-        // Load sprites
-        this.player.sprite.src = this.getCharacterSprite(selectedCharacter);
-        this.patrick.sprite.src = 'Patrick_Star.svg.png';
-        this.patrick.smugSprite.src = 'OIP (2).jpg';
-
-        // Weapons
-        this.weaponSprites = {
-          'Roblox Noob': 'Untitled.jpg',
-          'Mario': 'pipe.png',
-          'Among Us': 'Apple.png',
-          'Steve': 'Cake.png'
-        };
-
-        // Patrick's dance element
-        this.patrickDanceElement = document.createElement('div');
-        this.patrickDanceElement.style.cssText = `
-          position: absolute;
-          display: none;
-          z-index: 1000;
-        `;
-        this.patrickDanceElement.innerHTML = `
-          <img src="patrick-dancing.gif" style="width: 250px; height: 250px;">
-        `;
-        document.getElementById('game-screen').appendChild(this.patrickDanceElement);
-
-        // Character victory dance element
-        this.characterDanceElement = document.createElement('div');
-        this.characterDanceElement.style.cssText = `
-          position: absolute;
-          display: none;
-          z-index: 1000;
-        `;
-        document.getElementById('game-screen').appendChild(this.characterDanceElement);
-
-        // Victory dance GIFs
-        this.danceGifs = {
-          'Steve': 'minecraft-steve.gif',
-          'Mario': 'mario-mario-dancing.gif',
-          'Among Us': '200w.gif',
-          'Roblox Noob': '27187609c933f7c1009722b5fae6a4b4.gif'
-        };
-
-        // Gun sprite & sounds
-        this.gunSprite = new Image();
-        this.gunSprite.src = 'Item_Glock-sharedassets4.assets-616.webp';
-        this.gunSound = new Audio('gunshoot.mp3');
-        this.pipeSound = new Audio('metal pipe.wav');
-        this.gunSound.volume = 0.3;
-        this.pipeSound.volume = 0.3;
-
-        // Gun duration
-        this.gunTimeLeft = 0;
-
-        // Key handling
-        this.keys = { w: false, s: false, a: false, d: false, f: false };
-
-        window.addEventListener('keydown', (e) => {
-          const key = e.key.toLowerCase();
-          if (key in this.keys) {
-            this.keys[key] = true;
-            if (key === 'f') {
-              this.handleAttack();
-            }
-          }
-        });
-
-        window.addEventListener('keyup', (e) => {
-          const key = e.key.toLowerCase();
-          if (key in this.keys) {
-            this.keys[key] = false;
-          }
-        });
-
-        // Mouse tracking
-        window.addEventListener('mousemove', (e) => {
-          this.lastMouseX = e.clientX;
-          this.lastMouseY = e.clientY;
-        });
-        window.addEventListener('click', (e) => {
-          const rect = this.canvas.getBoundingClientRect();
-          this.lastMouseX = e.clientX - rect.left;
-          this.lastMouseY = e.clientY - rect.top;
-        });
-      }
-
-      getCharacterSprite(character) {
-        const sprites = {
-          'Steve': 'the REAL REAL STEVE.jpg',
-          'Among Us': 'an871k4o1sn51 (1).png',
-          'Roblox Noob': 'OIP (1).jfif',
-          'Mario': 'smb1 mario idle.webp'
-        };
-        return sprites[character];
-      }
-
-      resizeCanvas() {
-        this.canvas.width = window.innerWidth;
-        this.canvas.height = window.innerHeight;
-      }
-
-      start() {
-        // Switch from background to battle music
-        this.backgroundMusic.pause();
-        this.battleMusic.volume = 0.3;
-        this.battleMusic.play().catch(err => console.log(err));
-
-        // Start the game loop
-        this.gameLoop();
-
-        // Spawners
-        this.spawnGunPickup();
-        setInterval(() => this.summonFloppas(), 3000);
-      }
-
-      spawnGunPickup() {
-        // 10% chance to spawn if none exist
-        if (Math.random() < 0.1 && this.gunPickups.length < 1) {
-          this.gunPickups.push({
-            x: Math.random() * (this.canvas.width - 40),
-            y: Math.random() * (this.canvas.height - 40),
-            width: 40,
-            height: 40
-          });
-        }
-        setTimeout(() => this.spawnGunPickup(), 5000);
-      }
-
-      summonFloppas() {
-        // Limit total floppas
-        if (this.floppas.length < 3) {
-          this.patrick.isSmug = true;
-          setTimeout(() => (this.patrick.isSmug = false), 1000);
-
-          const newFloppa = {
-            x: this.patrick.x,
-            y: this.patrick.y,
-            width: 60,
-            height: 60,
-            speed: 3,
-            health: 50,
-            sprite: new Image()
-          };
-          newFloppa.sprite.src = 'floppa_png-removebg-preview.png';
-          this.floppas.push(newFloppa);
-        }
-      }
-
-      handleAttack() {
-        const now = Date.now();
-        if (now - this.player.lastAttack >= this.player.attackCooldown) {
-          const projectile = {
-            x: this.player.x + this.player.width / 2,
-            y: this.player.y + this.player.height / 2,
-            width: 40,
-            height: 40,
-            speed: this.player.hasGun ? 12 : 8,
-            damage: this.player.hasGun
-              ? Math.floor(Math.random() * 21) + 40
-              : Math.floor(Math.random() * 21) + 10,
-            sprite: new Image()
-          };
-
-          // Sound
-          if (this.player.hasGun) {
-            if (this.selectedCharacter === 'Mario') {
-              this.pipeSound.currentTime = 0;
-              this.pipeSound.play();
-            } else {
-              this.gunSound.currentTime = 0;
-              this.gunSound.play();
-            }
-          }
-
-          projectile.sprite.src = this.weaponSprites[this.selectedCharacter];
-          const angle = Math.atan2(
-            this.lastMouseY - projectile.y,
-            this.lastMouseX - projectile.x
-          );
-          projectile.dx = Math.cos(angle) * projectile.speed;
-          projectile.dy = Math.sin(angle) * projectile.speed;
-
-          this.projectiles.push(projectile);
-          this.player.lastAttack = now;
-        }
-      }
-
-      update() {
-        // Move player
-        if (this.keys['w']) this.player.y -= this.player.speed;
-        if (this.keys['s']) this.player.y += this.player.speed;
-        if (this.keys['a']) this.player.x -= this.player.speed;
-        if (this.keys['d']) this.player.x += this.player.speed;
-
-        // Clamp
-        this.player.x = Math.max(0, Math.min(this.canvas.width - this.player.width, this.player.x));
-        this.player.y = Math.max(0, Math.min(this.canvas.height - this.player.height, this.player.y));
-
-        // Collide with Patrick
-        if (this.checkCollision(this.player, this.patrick)) {
-          this.player.health = Math.max(0, this.player.health - 2);
-          document.getElementById('health-fill').style.width = `${this.player.health}%`;
-        }
-
-        // Floppas chase
-        this.floppas.forEach((floppa) => {
-          const dx = this.player.x - floppa.x;
-          const dy = this.player.y - floppa.y;
-          const dist = Math.sqrt(dx * dx + dy * dy);
-          if (dist > 0) {
-            floppa.x += (dx / dist) * floppa.speed;
-            floppa.y += (dy / dist) * floppa.speed;
-          }
-          // Collide with player
-          if (this.checkCollision(this.player, floppa)) {
-            this.player.health = Math.max(0, this.player.health - 0.5);
-            document.getElementById('health-fill').style.width = `${this.player.health}%`;
-          }
-        });
-
-        // Projectiles
-        this.projectiles.forEach((proj, i) => {
-          proj.x += proj.dx;
-          proj.y += proj.dy;
-
-          // Hit Patrick
-          if (this.checkCollision(proj, this.patrick)) {
-            this.patrick.health = Math.max(0, this.patrick.health - proj.damage);
-            this.projectiles.splice(i, 1);
-          }
-
-          // Hit floppas
-          this.floppas.forEach((f, fi) => {
-            if (this.checkCollision(proj, f)) {
-              f.health -= proj.damage;
-              this.projectiles.splice(i, 1);
-              if (f.health <= 0) {
-                this.floppas.splice(fi, 1);
-              }
-            }
-          });
-        });
-
-        // Remove offscreen projectiles
-        this.projectiles = this.projectiles.filter((p) =>
-          p.x >= 0 && p.x <= this.canvas.width && p.y >= 0 && p.y <= this.canvas.height
-        );
-
-        // Gun timer
-        if (this.player.hasGun) {
-          if (this.gunTimeLeft <= 0) {
-            this.player.hasGun = false;
-          } else {
-            this.gunTimeLeft--;
-          }
-        }
-
-        // Gun pickup
-        this.gunPickups.forEach((pickup, idx) => {
-          if (this.checkCollision(this.player, pickup)) {
-            this.player.hasGun = true;
-            this.gunTimeLeft = 30 * 60; // 30s
-            this.gunPickups.splice(idx, 1);
-          }
-        });
-
-        // Patrick random walk
-        this.patrick.moveTimer++;
-        if (this.patrick.moveTimer >= 120) {
-          this.patrick.direction = Math.random() * Math.PI * 2;
-          this.patrick.moveTimer = 0;
-        }
-        this.patrick.x += Math.cos(this.patrick.direction) * this.patrick.speed;
-        this.patrick.y += Math.sin(this.patrick.direction) * this.patrick.speed;
-        // Clamp
-        this.patrick.x = Math.max(0, Math.min(this.canvas.width - this.patrick.width, this.patrick.x));
-        this.patrick.y = Math.max(0, Math.min(this.canvas.height - this.patrick.height, this.patrick.y));
-
-        // Check game over
-        if (this.player.health <= 0) {
-          this.gameOver(false);
-        } else if (this.patrick.health <= 0) {
-          this.gameOver(true);
-        }
-      }
-
-      checkCollision(r1, r2) {
-        return (
-          r1.x < r2.x + r2.width &&
-          r1.x + r1.width > r2.x &&
-          r1.y < r2.y + r2.height &&
-          r1.y + r1.height > r2.y
-        );
-      }
-
-      draw() {
-        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-
-        // Custom background
-        const bg = new Image();
-        bg.src = 'Garden vs Deads 2 (pvz ripoff).jpg';
-        this.ctx.drawImage(bg, 0, 0, this.canvas.width, this.canvas.height);
-
-        // Draw player if active
-        if (this.gameActive) {
-          this.ctx.drawImage(
-            this.player.sprite,
-            this.player.x,
-            this.player.y,
-            this.player.width,
-            this.player.height
-          );
-
-          // Gun overlay if equipped
-          if (this.player.hasGun) {
-            this.ctx.drawImage(
-              this.gunSprite,
-              this.player.x + this.player.width - 20,
-              this.player.y + this.player.height - 20,
-              30,
-              20
-            );
-          }
-        }
-
-        // Patrick (or smug)
-        if (!this.patrick.isDancing) {
-          const pSprite = this.patrick.isSmug ? this.patrick.smugSprite : this.patrick.sprite;
-          this.ctx.drawImage(pSprite, this.patrick.x, this.patrick.y, this.patrick.width, this.patrick.height);
-        }
-
-        // Dancing state
-        if (this.patrick.isDancing) {
-          this.patrickDanceElement.style.display = 'block';
-          this.patrickDanceElement.style.left = `${this.patrick.x}px`;
-          this.patrickDanceElement.style.top = `${this.patrick.y}px`;
-        } else {
-          this.patrickDanceElement.style.display = 'none';
-        }
-
-        // Floppas
-        this.floppas.forEach((f) => {
-          this.ctx.drawImage(f.sprite, f.x, f.y, f.width, f.height);
-        });
-
-        // Projectiles
-        this.projectiles.forEach((proj) => {
-          this.ctx.drawImage(proj.sprite, proj.x, proj.y, proj.width, proj.height);
-        });
-
-        // Gun pickups
-        this.gunPickups.forEach((pickup) => {
-          this.ctx.drawImage(this.gunSprite, pickup.x, pickup.y, 40, 40);
-        });
-
-        // Text
-        this.ctx.fillStyle = 'white';
-        this.ctx.strokeStyle = 'black';
-        this.ctx.lineWidth = 3;
-        this.ctx.font = '20px Arial';
-
-        // Player HP
-        const pHP = `HP: ${Math.ceil(this.player.health)}/100`;
-        this.ctx.strokeText(pHP, 10, 60);
-        this.ctx.fillText(pHP, 10, 60);
-
-        // Patrick HP
-        const patHP = `HP: ${Math.ceil(this.patrick.health)}/300`;
-        this.ctx.strokeText(patHP, this.patrick.x, this.patrick.y - 10);
-        this.ctx.fillText(patHP, this.patrick.x, this.patrick.y - 10);
-
-        // Gun timer
-        if (this.player.hasGun) {
-          const timeLeft = Math.ceil(this.gunTimeLeft / 60);
-          const gunTimer = `Gun: ${timeLeft}s`;
-          this.ctx.strokeText(gunTimer, 10, 90);
-          this.ctx.fillText(gunTimer, 10, 90);
-        }
-      }
-
-      gameOver(playerWon) {
-        this.gameActive = false;
-
-        if (playerWon) {
-          // Show player's dance
-          this.characterDanceElement.innerHTML = `
-            <img src="${this.danceGifs[this.selectedCharacter]}"
-                 style="width: 250px; height: 250px;">
-          `;
-          this.characterDanceElement.style.position = 'absolute';
-          this.characterDanceElement.style.left = '30%';
-          this.characterDanceElement.style.top = '40%';
-          this.characterDanceElement.style.transform = 'translate(-50%, -50%)';
-          this.characterDanceElement.style.display = 'block';
-          this.characterDanceElement.style.zIndex = '1001';
-        } else {
-          // Patrick victory dance
-          this.patrick.isDancing = true;
-          this.patrickDanceElement.style.position = 'absolute';
-          this.patrickDanceElement.style.left = '70%';
-          this.patrickDanceElement.style.top = '40%';
-          this.patrickDanceElement.style.transform = 'translate(-50%, -50%)';
-          this.patrickDanceElement.style.display = 'block';
-          this.patrickDanceElement.style.zIndex = '1001';
-        }
-
-        const gameOverScreen = document.getElementById('game-over-screen');
-        const gameOverTitle = document.getElementById('game-over-title');
-        gameOverTitle.textContent = playerWon ? 'You Won!' : 'Patrick Wins!';
-        gameOverScreen.classList.remove('hidden');
-
-        document.getElementById('return-to-select').onclick = () => {
-          location.reload();
-        };
-      }
-
-      gameLoop() {
-        if (this.gameActive) {
-          this.update();
-          this.draw();
-          requestAnimationFrame(() => this.gameLoop());
-        }
-      }
+    // Check if level 2 content should be visible
+    function updateLevel2Content() {
+      const level2Content = document.querySelectorAll('.level2-content');
+      const isUnlocked = localStorage.getItem('level2ContentUnlocked') === 'true';
+      level2Content.forEach(element => {
+        element.style.display = isUnlocked ? 'flex' : 'none';
+      });
     }
-
-    /*************************************************************
-     *   MAIN SCRIPT / EVENT LISTENER
-     *************************************************************/
+    
+    // Update visibility on page load and after any potential unlocks
     document.addEventListener('DOMContentLoaded', () => {
-      const characterCards = document.querySelectorAll('.character-card');
-      const startGameButton = document.getElementById('start-game');
-      const backgroundMusic = document.getElementById('background-music');
-
-      // Try playing background music
-      backgroundMusic.volume = 0.3;
-      backgroundMusic.play().catch(e => console.log('Autoplay prevented:', e));
-
-      let selectedCharacter = null;
-      let gameEngine = null;
-
-      characterCards.forEach((card) => {
-        card.addEventListener('click', () => {
-          // Deselect all
-          characterCards.forEach(c => c.classList.remove('selected'));
-          // Select this one
-          card.classList.add('selected');
-          selectedCharacter = card.dataset.character;
-
-          // Show mission brief
-          document.querySelector('.mission-brief').classList.remove('hidden');
+      updateLevel2Content();
+      
+      const levelSelectButton = document.getElementById('level-select-button');
+      const levelSelectMenu = document.getElementById('level-select-menu');
+      const levelButtons = document.querySelectorAll('.level-button');
+      const closeMenu = document.querySelector('.close-menu');
+      
+      levelSelectButton.style.display = 'none'; // Ensure hidden by default
+      
+      // Check if level 2 is unlocked to show the button
+      if (localStorage.getItem('level2Unlocked') === 'true') {
+        levelSelectButton.style.display = 'block';
+      }
+      
+      // Check selected level immediately on page load
+      const selectedLevel = localStorage.getItem('selectedLevel') || '1';
+      if (selectedLevel === '2') {
+        document.getElementById('level1-brief').classList.add('hidden');
+        document.getElementById('level2-brief').classList.remove('hidden');
+      } else {
+        document.getElementById('level1-brief').classList.remove('hidden');
+        document.getElementById('level2-brief').classList.add('hidden');
+      }
+      
+      levelSelectButton.addEventListener('click', () => {
+        levelSelectMenu.classList.remove('hidden');
+        
+        // Update level button availability
+        levelButtons.forEach(button => {
+          const level = parseInt(button.dataset.level);
+          const maxUnlockedLevel = localStorage.getItem('level2Unlocked') === 'true' ? 2 : 1;
+          
+          if (level <= maxUnlockedLevel) {
+            button.classList.remove('locked');
+            button.disabled = false;
+          } else {
+            button.classList.add('locked');
+            button.disabled = true;
+          }
         });
       });
-
-      startGameButton.addEventListener('click', () => {
-        if (selectedCharacter) {
-          // Stop background music, start game
-          backgroundMusic.pause();
-
-          document.getElementById('character-select-screen').classList.add('hidden');
-          document.getElementById('game-screen').classList.remove('hidden');
-
-          // Create & start engine
-          gameEngine = new GameEngine(selectedCharacter);
-          gameEngine.start();
-        } else {
-          alert('Please select a character first!');
-        }
+      
+      closeMenu.addEventListener('click', () => {
+        levelSelectMenu.classList.add('hidden');
       });
-
-      // Track mouse position (for aiming)
-      window.addEventListener('mousemove', (e) => {
-        if (gameEngine) {
-          const rect = gameEngine.canvas.getBoundingClientRect();
-          gameEngine.lastMouseX = e.clientX - rect.left;
-          gameEngine.lastMouseY = e.clientY - rect.top;
-        }
+      
+      levelButtons.forEach(button => {
+        button.addEventListener('click', () => {
+          const level = button.dataset.level;
+          localStorage.setItem('selectedLevel', level);
+          levelSelectMenu.classList.add('hidden');
+          
+          // Show appropriate mission brief
+          if (level === '1') {
+            document.getElementById('level1-brief').classList.remove('hidden');
+            document.getElementById('level2-brief').classList.add('hidden');
+          } else {
+            document.getElementById('level1-brief').classList.add('hidden');
+            document.getElementById('level2-brief').classList.remove('hidden');
+          }
+        });
       });
     });
+    
+    window.addEventListener('storage', updateLevel2Content);
   </script>
+  
+  <script>
+    const getCharacterDescription = (character) => {
+      const descriptions = {
+        'Steve': {
+          description: "This blocky hero breaks the mold! Armed with unlimited cake slices from his inventory, Steve brings a taste of Minecraft mayhem to the battlefield. Who knew dessert could be so dangerous?",
+          baseDamage: "10-30"
+        },
+        'Among Us': {
+          description: "Looking pretty sus with those apples! This crafty crewmate turns emergency meetings into food fights, yeeting golden apples at anyone who looks even slightly suspicious.",
+          baseDamage: "10-30"
+        },
+        'Roblox Noob': {
+          description: "Money talks, but tickets fly! This classic Roblox champion makes it rain with old-school Tix, proving that discontinued currency can still pack a punch.",
+          baseDamage: "10-30"
+        },
+        'Mario': {
+          description: "It's-a him, Mario! Trading Bowser-bonking for pipe-throwing, our favorite plumber brings his trademark enthusiasm to a whole new type of pipe-based problem solving.",
+          baseDamage: "10-30"
+        },
+        'Chill Guy': {
+          description: "The most laid-back hero around! Armed with endless Snickers bars, he believes everyone gets a little aggressive when they're hungry. His chocolate projectiles not only deal damage but also help enemies chill out!",
+          baseDamage: "10-30",
+          special: "Slows enemies to 50% speed for 3 seconds"
+        }
+      };
+      return descriptions[character];
+    };
+  </script>
+  
+  <script type="module" src="game.js"></script>
 </body>
 </html>
