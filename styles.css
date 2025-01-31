@@ -18,7 +18,7 @@ body, html {
     left: 0;
     width: 100%;
     height: 100%;
-    background-image: url('/Windows.webp');
+    background-image: url('Windows.webp');
     background-size: cover;
     background-position: center;
     z-index: -2;
@@ -124,7 +124,7 @@ body, html {
     left: 0;
     width: 100%;
     height: 100%;
-    background-image: url('/PVZ Lawn.jpg');
+    background-image: url('PVZ Lawn.jpg');
     background-size: cover;
     background-position: center;
 }
