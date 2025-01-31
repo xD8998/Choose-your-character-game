@@ -34,11 +34,47 @@ body, html {
     z-index: -1;
 }
 
+.game-title {
+  text-align: center;
+  margin-bottom: 30px;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+}
+
+.game-title h1 {
+  font-size: 4em;
+  color: #ff4500;
+  margin: 0;
+  font-family: 'Arial Black', sans-serif;
+  letter-spacing: 2px;
+  animation: titlePulse 2s infinite;
+}
+
+.game-title h2 {
+  font-size: 2em;
+  color: #4a90e2;
+  margin: 0;
+  font-family: Arial, sans-serif;
+  letter-spacing: 4px;
+  animation: subtitleSlide 1s ease-out;
+}
+
+@keyframes titlePulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+
+@keyframes subtitleSlide {
+  0% { transform: translateX(-100%); opacity: 0; }
+  100% { transform: translateX(0); opacity: 1; }
+}
+
 .character-select {
-    text-align: center;
-    padding: 20px;
-    position: relative;
-    z-index: 10;
+  text-align: center;
+  padding: 20px;
+  position: relative;
+  z-index: 10;
+  margin-top: 20px;
 }
 
 .character-select h1 {
